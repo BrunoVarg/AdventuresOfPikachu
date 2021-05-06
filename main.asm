@@ -8,7 +8,7 @@ POSITION: .half 100,112		# x e y
 .include "/sprites/pikachu_left.data"
 .include "/sprites/pikachu_back.data"
 .include "fase1.data"
-.include "transparente.data"
+
 
 .text
 .include "macro.asm"
@@ -19,11 +19,11 @@ INICIO:
 
 KEYBOARD_1:
 	# Descomentar no fim	
-	#li t1,0xFF200000	# carrega o endereÁo de controle do KDMMIO
+	#li t1,0xFF200000	# carrega o endere√ßo de controle do KDMMIO
 	#lw t0,0(t1)		# Le bit de Controle Teclado
 	#andi t0,t0,0x0001	# mascara o bit menos significativo
-   	#beq t0,zero,KEYBOARD   # Se n„o h· tecla pressionada ent„o volta pro LOOP
-  	#j PROX_LABEL 		# vai para a prÛxima LABEL se pressionar uma tecla
+   	#beq t0,zero,KEYBOARD   # Se n√£o h√° tecla pressionada ent√£o volta pro LOOP
+  	#j PROX_LABEL 		# vai para a pr√≥xima LABEL se pressionar uma tecla
   	
 PROX_LABEL:
 	change_frame(1)
@@ -51,6 +51,10 @@ KEYBOARD_LOOP:
 
 
 	verify('w',MOV_UP)
+	verify('s',MOV_DOWN)
+	verify('a',MOV_LEFT)
+	verify('d',MOV_RIGHT)
+	j KEYBOARD_LOOP
 
 MOV_UP:
 	
@@ -70,9 +74,63 @@ MOV_UP:
 	#s2 = x
 	#s1 = y
 	#a1 = label
+
+MOV_DOWN:
 	
+	la a0, POSITION
+	lh t1, 0(a0)	# t1 = X
+	lh t2, 2(a0)	# t2 = Y
+	
+	addi s1,t2, 16
+	sh s1, 2(a0)
+	mv s2, t1
+	li t0,1
+	la a1, pikachu_front
+	jal PRINT_IMAGE
+	j KEYBOARD_LOOP
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
 
+MOV_LEFT:
+	
+	la a0, POSITION
+	lh t1, 0(a0)	# t1 = X
+	lh t2, 2(a0)	# t2 = Y
+	
+	addi s1,t1, -16
+	sh s1, 0(a0)
+	mv s2, t1
+	li t0,1
+	la a1, pikachu_left
+	jal PRINT_IMAGE
+	j KEYBOARD_LOOP
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
 
+MOV_RIGHT:
+	
+	la a0, POSITION
+	lh t1, 0(a0)	# t1 = X
+	lh t2, 2(a0)	# t2 = Y
+	
+	addi s1,t1, 16
+	sh s1, 0(a0)
+	mv s2, t1
+	li t0,1
+	la a1, pikachu_right
+	jal PRINT_IMAGE
+	j KEYBOARD_LOOP
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
 # devolve o controle ao sistema operacional
 FIM:
 	
