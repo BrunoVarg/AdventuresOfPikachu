@@ -1,10 +1,14 @@
 .data
+
+POSITION: .half 100,112		# x e y
+
 .include "Capa.data"
 .include "/sprites/pikachu_front.data"
 .include "/sprites/pikachu_right.data"
 .include "/sprites/pikachu_left.data"
 .include "/sprites/pikachu_back.data"
 .include "fase1.data"
+.include "transparente.data"
 
 .text
 .include "macro.asm"
@@ -38,8 +42,35 @@ PRINT_1:
 	jal PRINT_IMAGE
 
 KEYBOARD_LOOP:
-	
 
+	li t1,0xFF200000
+	lw t0,0(t1)
+	andi t0,t0,0x0001
+  	beq t0,zero,KEYBOARD_LOOP
+  	lw t0,4(t1)			#Tecla pressionada = t0
+
+
+	verify('w',MOV_UP)
+
+MOV_UP:
+	
+	la a0, POSITION
+	lh t1, 0(a0)	# t1 = X
+	lh t2, 2(a0)	# t2 = Y
+	
+	addi s1,t2, -16
+	sh s1, 2(a0)
+	mv s2, t1
+	li t0,1
+	la a1, pikachu_back
+	jal PRINT_IMAGE
+	j KEYBOARD_LOOP
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
 
 
 # devolve o controle ao sistema operacional
