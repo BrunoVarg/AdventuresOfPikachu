@@ -19,18 +19,18 @@ INICIO:
 
 KEYBOARD_1:
 	# Descomentar no fim	
-	#li t1,0xFF200000	# carrega o endereÃ§o de controle do KDMMIO
+	#li t1,0xFF200000	# carrega o endereço de controle do KDMMIO
 	#lw t0,0(t1)		# Le bit de Controle Teclado
 	#andi t0,t0,0x0001	# mascara o bit menos significativo
-   	#beq t0,zero,KEYBOARD   # Se nÃ£o hÃ¡ tecla pressionada entÃ£o volta pro LOOP
-  	#j PROX_LABEL 		# vai para a prÃ³xima LABEL se pressionar uma tecla
+   	#beq t0,zero,KEYBOARD   # Se não há tecla pressionada então volta pro LOOP
+  	#j PROX_LABEL 		# vai para a próxima LABEL se pressionar uma tecla
   	
 PROX_LABEL:
 	change_frame(1)
 	
 j PRINT_1
 .include "print.asm"	
-	
+.include "clean.asm"	
 PRINT_1:
 	load_values(152,186,1,pikachu_back)
 	jal PRINT_IMAGE
@@ -51,16 +51,14 @@ KEYBOARD_LOOP:
 	j KEYBOARD_LOOP
 
 MOV_UP:
+
+	load_position(POSITION)
+	clean_image(1,fase1)
 	
-	la a0, POSITION
-	lh t1, 0(a0)	# t1 = X
-	lh t2, 2(a0)	# t2 = Y
+	jal CLEAN_IMAGE
+	load_position(POSITION)
 	
-	addi s1,t2, -16
-	sh s1, 2(a0)
-	mv s2, t1
-	li t0,1
-	la a1, pikachu_back
+	movement_y_up(1,pikachu_back)
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
@@ -71,16 +69,15 @@ MOV_UP:
 
 MOV_DOWN:
 	
-	la a0, POSITION
-	lh t1, 0(a0)	# t1 = X
-	lh t2, 2(a0)	# t2 = Y
+	load_position(POSITION)
+	clean_image(1,fase1)
 	
-	addi s1,t2, 16
-	sh s1, 2(a0)
-	mv s2, t1
-	li t0,1
-	la a1, pikachu_front
+	jal CLEAN_IMAGE
+	load_position(POSITION)
+	
+	movement_y_down(1,pikachu_front)
 	jal PRINT_IMAGE
+	
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -90,15 +87,13 @@ MOV_DOWN:
 
 MOV_LEFT:
 	
-	la a0, POSITION
-	lh t1, 0(a0)	# t1 = X
-	lh t2, 2(a0)	# t2 = Y
+	load_position(POSITION)
+	clean_image(1,fase1)
 	
-	addi s2,t1, -16
-	sh s2, 0(a0)
-	mv s1, t2
-	li t0,1
-	la a1, pikachu_left
+	jal CLEAN_IMAGE
+	load_position(POSITION)
+	movement_x_left(1,pikachu_left)
+	
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
@@ -109,15 +104,14 @@ MOV_LEFT:
 
 MOV_RIGHT:
 	
-	la a0, POSITION
-	lh t1, 0(a0)	# t1 = X
-	lh t2, 2(a0)	# t2 = Y
+	load_position(POSITION)
+	clean_image(1,fase1)
 	
-	addi s2,t1, 16
-	sh s2, 0(a0)
-	mv s1, t2
-	li t0,1
-	la a1, pikachu_right
+	jal CLEAN_IMAGE
+	load_position(POSITION)
+	
+	movement_x_right(1,pikachu_right)
+	
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
 	

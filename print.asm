@@ -1,8 +1,12 @@
 .text
-# t0 = frame
-# s2 = x
-# s1 = y
-# a1 = label
+#################################
+#	Entradas:		#
+#################################
+# 	t0 = frame		#
+# 	s2 = x			#
+# 	s1 = y			#
+# 	a1 = label		#
+#################################
 PRINT_IMAGE:
 	li t3, 0
 	li t1,0xFF000000	# endereco inicial da Memoria VGA - Frame 0
