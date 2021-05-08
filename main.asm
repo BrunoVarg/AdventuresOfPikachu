@@ -1,7 +1,7 @@
 .data
 
 POSITION: .half 152,186	# x e y
-#ENDERECO_INICIAL: .word 
+
 .include "Capa.data"
 .include "/sprites/pikachu_front.data"
 .include "/sprites/pikachu_right.data"
