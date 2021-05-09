@@ -1,17 +1,17 @@
 .data
 POSITION: .half 152,186	# x e y inicial
 
-CONTADOR: .word 1	# Auxilia a printar a sprite adequada, se for ímpar ou par
+CONTADOR: .word 0	# Auxilia a printar a sprite adequada, se for ímpar ou par
 
 .include "Capa.data"
-.include "/sprites/pikachu_front.data"
-.include "/sprites/pikachu_front1.data"
-.include "/sprites/pikachu_right.data"
-.include "/sprites/pikachu_right1.data"
-.include "/sprites/pikachu_left.data"
-.include "/sprites/pikachu_left1.data"
-.include "/sprites/pikachu_back.data"
-.include "/sprites/pikachu_back1.data"
+.include "/sprites/pikachu/pikachu_front.data"
+.include "/sprites/pikachu/pikachu_front1.data"
+.include "/sprites/pikachu/pikachu_right.data"
+.include "/sprites/pikachu/pikachu_right1.data"
+.include "/sprites/pikachu/pikachu_left.data"
+.include "/sprites/pikachu/pikachu_left1.data"
+.include "/sprites/pikachu/pikachu_back.data"
+.include "/sprites/pikachu/pikachu_back1.data"
 .include "fase1.data"
 
 
