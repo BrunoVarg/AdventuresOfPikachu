@@ -1,10 +1,10 @@
 .data
 .text
-#################################################
-#						#
-#		PRINT				#
-#						#
-#################################################
+#################################
+#				#
+#	    PRINT		#
+#				#
+#################################
 
 .macro print_background(%label,%frame)
 	li t1,0xFF000000	# endereco inicial da Memoria VGA - Frame 0
@@ -31,7 +31,11 @@ FIM_PB:
 
 .end_macro
 
-# Troca de frame
+#################################
+#				#
+# 	Troca de frame		#
+#				#
+#################################
 
 .macro change_frame(%frame)
 	li s0,0xFF200604	# Escolhe o Frame 0 ou 1
@@ -39,10 +43,12 @@ FIM_PB:
 	sw t2,0(s0)
 .end_macro
 
-####################################
-# 	Carrega valores pra usar   #
-#	no PRINT_IMAGE		   #
-####################################
+#################################
+#				#
+#	Carrega valores		#
+#   pra usar no PRINT_IMAGE	#
+#				#
+#################################
 
 .macro load_values(%x,%y,%frame,%label)
 li t0, %frame
@@ -51,9 +57,12 @@ li s1, %y
 la a1, %label
 .end_macro
 
-####################################
-# Verifica o caractere da KEYBOARD #
-####################################
+#################################
+#				#
+#	   Verifica		#
+#   o caractere da KEYBOARD 	#
+#				#
+#################################
 
 .macro verify(%char,%label)
 li t1, %char
@@ -82,7 +91,8 @@ li t0, %frame
 #				#
 #################################
 
-# Armazena em X em t1, e Y em t0
+# Armazena X em t1, e Y em t2
+
 .macro load_position(%label)
 la a0, %label
 lh t1, 0(a0)
@@ -119,4 +129,25 @@ sh s2, 0(a0)
 mv s1, t2
 li t0,%frame
 la a1, %label
+.end_macro
+
+#################################
+#				#
+#   Verifica a última tecla, 	#
+#    se for igual, printa	#
+#   uma sprite diferente,	#
+#     usando um contador	#
+#      que diferencia		#
+#      (ímpar ou par)		#
+#				#
+#################################
+
+.macro ultima_tecla(%label)
+la a2,CONTADOR
+lw t3, 0(a2)	# Carrega o contador
+addi t3,t3,1	# Contador+=1
+sw t3, 0(a2)	# Atualiza o Contador 
+li t4, 2
+rem t0,t3,t4
+beqz t0, %label
 .end_macro

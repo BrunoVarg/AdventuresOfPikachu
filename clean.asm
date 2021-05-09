@@ -15,7 +15,7 @@ START1_CI:
 	 li s4, 16		# Largura da Imagem
 	 li t2, 256
 	 add t1, t1, s3		# Endereço Inicial + 320*(Altura) 
-	 add t1, t1, s2	# Endereço Inicial + 320*(Altura) + (Largura)
+	 add t1, t1, s2		# Endereço Inicial + 320*(Altura) + (Largura)
 	 addi a1, a1, 8
 	 add a1, a1, s3			
 	 add a1, a1, s2       	# primeiro pixels depois das informações de nlin ncol
