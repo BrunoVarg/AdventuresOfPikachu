@@ -1,7 +1,7 @@
 .data
-POSITION: .half 152,186	# x e y inicial
-
-CONTADOR: .word 0	# Auxilia a printar a sprite adequada, se for ímpar ou par
+POSITION: .half 152,186		# x e y inicial
+MURO: .half 70,24,248,202	# Coordenadas do muro
+CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
 
 .include "Capa.data"
 .include "/sprites/pikachu/pikachu_front.data"
@@ -73,9 +73,11 @@ MOV_UP:
 	
 MOV1_UP:
 	movement_y_up(1,pikachu_back)
+	verifica_muro_up()
 	j PRINT_MU
 MOV2_UP:
 	movement_y_up(1,pikachu_back1)
+	verifica_muro_up()
 PRINT_MU:
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
@@ -103,9 +105,11 @@ MOV_DOWN:
 	
 MOV1_DO:
 	movement_y_down(1,pikachu_front)
+	verifica_muro_down()
 	j PRINT_DO
 MOV2_DO:
 	movement_y_down(1,pikachu_front1)
+	verifica_muro_down()
 PRINT_DO:
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
@@ -133,9 +137,11 @@ MOV_LEFT:
 	
 MOV1_LE:
 	movement_x_left(1,pikachu_left)
+	verifica_muro_left()
 	j PRINT_LE
 MOV2_LE:
 	movement_x_left(1,pikachu_left1)
+	verifica_muro_left()
 PRINT_LE:
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
@@ -163,9 +169,11 @@ MOV_RIGHT:
 	
 MOV1_RI:
 	movement_x_right(1,pikachu_right)
+	verifica_muro_right()
 	j PRINT_RI
 MOV2_RI:
 	movement_x_right(1,pikachu_right1)
+	verifica_muro_right()
 PRINT_RI:
 	jal PRINT_IMAGE
 	j KEYBOARD_LOOP
