@@ -187,3 +187,17 @@ li t4, 2
 rem t0,t3,t4
 beqz t0, %label
 .end_macro
+
+#################################
+#				#
+#	Carrega a label		#
+#	e a frame para usar	#
+#	no procedimento		#
+#	PRINT_MAPA		#
+#				#
+#################################
+
+.macro load_fase(%label,%frame)
+la a0, %label
+li t4, %frame
+.end_macro

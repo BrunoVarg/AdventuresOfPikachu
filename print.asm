@@ -23,7 +23,7 @@ START1_PI:
 	mul s3, s3, s1		# 320*(Altura) (Y)		
 	lw s4, 0(a1)		# Largura da Imagem
 	lw s5, 4(a1)		# Altura da Imagem
-	mul t2, s4,s5
+	mul t2, s4,s5		# Área
 	add t1, t1, s3		# Endereço Inicial + 320*(Altura) 
 	add t1, t1, s2		# Endereço Inicial + 320*(Altura) + (Largura)	
 	addi a1,a1,8        	# primeiro pixels depois das informações de nlin ncol

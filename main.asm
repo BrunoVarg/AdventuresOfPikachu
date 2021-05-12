@@ -2,7 +2,19 @@
 POSITION: .half 152,186		# x e y inicial
 MURO: .half 70,24,248,202	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
-
+FASE1: .byte 	1,1,1,1,1,0,1,1,1,1,1,
+		1,1,1,1,1,0,1,1,1,1,1,
+		1,1,0,0,0,0,0,1,1,1,1,
+		1,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,5,5,5,5,5,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,
+		1,1,1,1,1,0,1,1,1,1,1,
+		3,3,3,1,1,0,1,2,2,2,2,
+		1,1,1,1,1,0,1,1,1,1,1,
+		0,0,0,0,0,0,0,0,0,0,0,
+		1,1,1,1,1,0,0,0,0,0,0
+		
+.include "tiles.data"
 .include "Capa.data"
 .include "/sprites/pikachu/pikachu_front.data"
 .include "/sprites/pikachu/pikachu_front1.data"
@@ -35,8 +47,18 @@ PROX_LABEL:
 	
 j PRINT_1
 .include "print.asm"	
-.include "clean.asm"	
+.include "clean.asm"
+.include "mapa.asm"	
 PRINT_1:
+
+	# 1 - Percorrer o vetor de memória da FASE 1, verificando qual o número que está lá
+	# 2 - Printar na coordenada exata do mapa, o bloco correspondente
+	# 3 - Verificar colisão	
+	
+load_fase(FASE1,1)
+jal PRINT_MAPA			
+	
+PIKACHU:
 	load_values(152,186,1,pikachu_back)
 	jal PRINT_IMAGE
 
