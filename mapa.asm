@@ -7,7 +7,7 @@
 #################################
 PRINT_MAPA:
 	li s3, 72		# X inicial dentro do muro	
-	li s4, 24		# Y inicial dentro do muro
+	li s4, 25		# Y inicial dentro do muro
 	li a3, 11
 	li a4, 0
 	li t0,0			# Contador 1	Para quando chegar em 121		
@@ -24,42 +24,42 @@ PRINTA_BLOCO:
 
 	li t3, 16
 	mul s0, t3,t2		# Bloco correspondente x 16
-	addi s0,s0,8		# Pula as primeiras informaÁıes
+	addi s0,s0,8		# Pula as primeiras informa√ß√µes
 	la a1, tiles	
 	lw s11, 0(a1)
 	
-	add a1,a1,s0		# Para no endereÁo inicial que quer printar
+	add a1,a1,s0		# Para no endere√ßo inicial que quer printar
 	li s1,0xFF000000	# endereco inicial da Memoria VGA - Frame 0
 	bgtz  t4, FRAME1_PB	# Verifica qual a frame, se for 1, ele soma 0x00100000 ao 0xFF000000
 	j START1_PB
 FRAME1_PB:
 	li s2, 0x00100000
-	add s1,s1,s2		# EndereÁo que vai printar - Frame 1
+	add s1,s1,s2		# Endere√ßo que vai printar - Frame 1
 
 START1_PB:
 	li s9, 0		# Contador 3
 	li t5, 0 		# Contador 2
 	li t6, 320		# Usar na quebra de linha
 	mul s5, t6,s4		# 320*altura
-	add s1,s1, s5 		# EndereÁo Inicial + 320* Altura
-	add s1,s1, s3 		# EndereÁo Inicial + 320*Altura + Largura
+	add s1,s1, s5 		# Endere√ßo Inicial + 320* Altura
+	add s1,s1, s3 		# Endere√ßo Inicial + 320*Altura + Largura
 PRINTAR_PB:
-	li s7, 256		# ¡rea do bloco, onde o contador precisa parar
+	li s7, 256		# √Årea do bloco, onde o contador precisa parar
 	beq t5, s7,ULTIMA_PB
 	addi s9,s9, 4
 	addi t5,t5, 4	
 	addi s10,s10, 1 
-	lw s8, 0(a1)		# S8 = EndereÁo inicial dos "tiles"
+	lw s8, 0(a1)		# S8 = Endere√ßo inicial dos "tiles"
 	sw s8, 0(s1)		# Printa em s1 (BitMap) o pixel correspondente
-	addi s1,s1,4		# Soma 4 ao endereÁo do BitMap
+	addi s1,s1,4		# Soma 4 ao endere√ßo do BitMap
 	addi a1,a1,4 		# Soma 4 ao bloco "tiles"
 	beq s9, t3,BREAK_PB
 	j PRINTAR_PB
 
 BREAK_PB:
 	
-	add s1,s1,t6		#EndereÁo + 320 = Pula a linha
-	sub s1,s1,t3		#EndereÁo - 16 = Diminui pelo tamanho dos pixels
+	add s1,s1,t6		#Endere√ßo + 320 = Pula a linha
+	sub s1,s1,t3		#Endere√ßo - 16 = Diminui pelo tamanho dos pixels
 	add a1,a1,s11
 	sub a1,a1,t3
 	li s9,0
@@ -72,11 +72,11 @@ ULTIMA_PB:
 	beq a4,a3, SOMA_Y_PB
 	j CONTINUA_PB
 SOMA_Y_PB:
-	addi s4,s4,16		# Quando chegar em 11(tamanho do mapa dentro), ele vai para o prÛximo Y
+	addi s4,s4,16		# Quando chegar em 11(tamanho do mapa dentro), ele vai para o pr√≥ximo Y
 	li s3,72		# Reseta o X para o inicial
 	li a4,0
 CONTINUA_PB:		
-	addi s0,s0,16		# Vai para o prÛximo elemento a ser printado
+	addi s0,s0,16		# Vai para o pr√≥ximo elemento a ser printado
 	j PRINT_MAPA_DENTRO
 	
 FIM_PM:
