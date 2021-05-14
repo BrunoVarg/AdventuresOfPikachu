@@ -15,16 +15,16 @@
 	j INICIO_PB
 SOMA_PB:
 	li t0, 0x00100000
-	add t1,t1,t0		# Endereço Inicial - Frame 1 - 0xFF100000
-	add t2,t2,t0		# Endereço Final - Frame 1 - 0xFF112C00
+	add t1,t1,t0		# EndereÃ§o Inicial - Frame 1 - 0xFF100000
+	add t2,t2,t0		# EndereÃ§o Final - Frame 1 - 0xFF112C00
 INICIO_PB:
 	 
-	la s1,%label		# endereço dos dados da tela na memoria
-	addi s1,s1,8		# primeiro pixels depois das informações de nlin ncol
-LOOP1_PB: beq t1,t2,FIM_PB	# Se for o último endereço então sai do loop
+	la s1,%label		# endereÃ§o dos dados da tela na memoria
+	addi s1,s1,8		# primeiro pixels depois das informaÃ§Ãµes de nlin ncol
+LOOP1_PB: beq t1,t2,FIM_PB	# Se for o Ãºltimo endereÃ§o entÃ£o sai do loop
 	lw t3,0(s1)		# le um conjunto de 4 pixels : word
-	sw t3,0(t1)		# escreve a word na memória VGA
-	addi t1,t1,4		# soma 4 ao endereço
+	sw t3,0(t1)		# escreve a word na memÃ³ria VGA
+	addi t1,t1,4		# soma 4 ao endereÃ§o
 	addi s1,s1,4
 	j LOOP1_PB		# volta a verificar
 FIM_PB:
@@ -136,7 +136,7 @@ la a1, %label
 #################################
 #				#
 #				#
-#	   COLISÃO		#
+#	   COLISÃƒO		#
 #				#
 #				#
 #################################
@@ -179,7 +179,7 @@ CONTINUA_VMR:
 
 #################################
 #				#
-# 	Colisão Blocos		#
+# 	ColisÃ£o Blocos		#
 # Borda Lateral = 71 (preto)	#
 # Borda Superior = 24 (muro)	#
 # Pixels = 16			#
@@ -190,7 +190,7 @@ CONTINUA_VMR:
 #################################
 
 # t0, s2,s1, a1
-# Armazena em t4 o bloco atual
+# Armazena em s7 o bloco atual
 .macro bloco_atual()
 li s7, 0
 li s8, 71
@@ -212,7 +212,7 @@ add s7, s7, s6
 .macro verifica_bloco(%label, %condicional)
 la a5, %label
 add a5, a5, s7
-lb t5, 0(a5)		# Bloco do Mapa que a Sprite está
+lb t5, 0(a5)		# Bloco do Mapa que a Sprite estÃ¡
 la a2, BLOCOS_BLOQUEADOS
 li t6, 5		# Tamanho dos BLOCOS_BLOQUEADOS
 li s4, 0		# Contador
@@ -232,12 +232,12 @@ FIM:
 
 #################################
 #				#
-#   Verifica a última tecla, 	#
+#   Verifica a Ãºltima tecla, 	#
 #    se for igual, printa	#
 #   uma sprite diferente,	#
 #     usando um contador	#
 #      que diferencia		#
-#      (ímpar ou par)		#
+#      (Ã­mpar ou par)		#
 #				#
 #################################
 
