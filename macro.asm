@@ -93,41 +93,7 @@ li t0, %frame
 
 # Armazena X em t1, e Y em t2
 
-.macro verifica_muro_up()
-la a2, MURO
-lh t4, 2(a2)
-bgt s1,t4,CONTINUA_VMU
-addi s1, s1, 16
-sh s1, 2(a0)
-CONTINUA_VMU:
-.end_macro
 
-.macro verifica_muro_down()
-la a2, MURO
-lh t4, 6(a2)
-blt s1,t4,CONTINUA_VMD
-addi s1, s1, -16
-sh s1, 2(a0)
-CONTINUA_VMD:
-.end_macro
-
-.macro verifica_muro_left()
-la a2, MURO
-lh t4, 0(a2)
-bge s2,t4,CONTINUA_VML
-addi s2, s2, 16
-sh s2, 0(a0)
-CONTINUA_VML:
-.end_macro
-
-.macro verifica_muro_right()
-la a2, MURO
-lh t4, 4(a2)
-blt s2,t4,CONTINUA_VMR
-addi s2, s2, -16
-sh s2, 0(a0)
-CONTINUA_VMR:
-.end_macro
 
 .macro load_position(%label)
 la a0, %label
@@ -166,6 +132,103 @@ mv s1, t2
 li t0,%frame
 la a1, %label
 .end_macro
+
+#################################
+#				#
+#				#
+#	   COLISÃO		#
+#				#
+#				#
+#################################
+
+.macro verifica_muro_up()
+la a2, MURO
+lh t4, 2(a2)
+bgt s1,t4,CONTINUA_VMU
+addi s1, s1, 16
+sh s1, 2(a0)
+CONTINUA_VMU:
+.end_macro
+
+.macro verifica_muro_down()
+la a2, MURO
+lh t4, 6(a2)
+blt s1,t4,CONTINUA_VMD
+addi s1, s1, -16
+sh s1, 2(a0)
+CONTINUA_VMD:
+.end_macro
+
+.macro verifica_muro_left()
+la a2, MURO
+lh t4, 0(a2)
+bge s2,t4,CONTINUA_VML
+addi s2, s2, 16
+sh s2, 0(a0)
+CONTINUA_VML:
+.end_macro
+
+.macro verifica_muro_right()
+la a2, MURO
+lh t4, 4(a2)
+blt s2,t4,CONTINUA_VMR
+addi s2, s2, -16
+sh s2, 0(a0)
+CONTINUA_VMR:
+.end_macro
+
+#################################
+#				#
+# 	Colisão Blocos		#
+# Borda Lateral = 71 (preto)	#
+# Borda Superior = 24 (muro)	#
+# Pixels = 16			#
+# (X atual - Borda Lat.)/16     #
+# (Y atual - Borda Sup.)/16     #
+# 	Y*11 + X		#
+#				#
+#################################
+
+# t0, s2,s1, a1
+# Armazena em t4 o bloco atual
+.macro bloco_atual()
+li s7, 0
+li s8, 71
+li s9, 24
+li s10, 16
+li s11, 11
+la a5, POSITION
+lh s6, 0(a5)	# X
+lh s4, 2(a5)	# Y
+sub s6, s6, s8
+sub s4, s4, s9
+div s6, s6, s10
+div s4, s4, s10
+mul s7, s4, s11
+add s7, s7, s6
+.end_macro
+
+# t0, s2,s1, a1
+.macro verifica_bloco(%label, %condicional)
+la a5, %label
+add a5, a5, s7
+lb t5, 0(a5)		# Bloco do Mapa que a Sprite está
+la a2, BLOCOS_BLOQUEADOS
+li t6, 5		# Tamanho dos BLOCOS_BLOQUEADOS
+li s4, 0		# Contador
+LOOP:
+	beq s4, t6, FIM
+	addi s4, s4, 1
+	lb s6, 0(a2)
+	beq t5, s6, %condicional
+	addi a2, a2, 1
+	j LOOP
+FIM:
+
+.end_macro
+
+
+
 
 #################################
 #				#

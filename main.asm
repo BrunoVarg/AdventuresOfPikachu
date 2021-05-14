@@ -1,18 +1,23 @@
 .data
+X: .string "\nX =  "
+Y: .string "\nY =  "
 POSITION: .half 152,186		# x e y inicial
 MURO: .half 70,24,248,202	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
-FASE1: .byte 	1,1,1,1,1,0,1,1,1,1,1,
-		1,1,1,1,1,0,1,1,1,1,1,
-		1,1,0,0,0,0,0,1,1,1,1,
-		1,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,5,5,5,5,5,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,
-		1,1,1,1,1,0,1,1,1,1,1,
-		3,3,3,1,1,0,1,2,2,2,2,
-		1,1,1,1,1,0,1,1,1,1,1,
-		0,0,0,0,0,0,0,0,0,0,0,
-		1,1,1,1,1,0,0,0,0,0,0
+BLOCO_ATUAL: .string "\nBLOCO ATUAL = "
+BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5
+FASE1: .byte 	2,2,1,0,0,0,0,0,1,2,2,
+        	2,2,1,0,0,0,0,0,1,2,2,
+        	1,1,1,0,0,0,0,0,1,1,1,
+        	1,0,0,0,1,0,0,0,0,0,1,
+        	1,0,2,2,0,0,0,0,2,0,1,
+        	1,0,2,2,2,0,0,0,0,2,1,
+        	1,0,0,2,2,0,0,0,0,0,1,
+        	1,0,1,0,0,0,0,0,1,0,1,
+        	1,0,0,0,0,0,0,0,2,0,1,
+        	1,1,1,1,0,0,0,1,1,1,1,
+        	2,2,2,1,0,0,0,1,2,2,2 
+
 		
 .include "tiles.data"
 .include "Capa.data"
@@ -56,11 +61,11 @@ PRINT_1:
 	# 3 - Verificar colisão	
 	
 load_fase(FASE1,1)
-jal PRINT_MAPA			
+call PRINT_MAPA			
 	
 PIKACHU:
 	load_values(152,186,1,pikachu_back)
-	jal PRINT_IMAGE
+	call PRINT_IMAGE
 
 KEYBOARD_LOOP:
 
@@ -85,23 +90,38 @@ MOV_UP:
 	load_position(POSITION)
 	clean_image(1,fase1)
 	
-	jal CLEAN_IMAGE
+	call CLEAN_IMAGE
 	load_position(POSITION)
 	
 	# Estrutura Condicional que verifica qual a ultima tecla
 	# através de um contador que diz se é ímpar ou par
 	ultima_tecla(MOV1_UP)
 	j MOV2_UP
+
+RESETA_MU:
+	la a5, POSITION
+	lh s5, 2(a5)
+	addi s5, s5, 16
+	sh s5, 2(a5)
+	j PRINT_MU
 	
 MOV1_UP:
 	movement_y_up(1,pikachu_back)
 	verifica_muro_up()
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_MU)
 	j PRINT_MU
 MOV2_UP:
 	movement_y_up(1,pikachu_back1)
 	verifica_muro_up()
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_MU)
+	
 PRINT_MU:
-	jal PRINT_IMAGE
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -117,7 +137,7 @@ MOV_DOWN:
 	load_position(POSITION)
 	clean_image(1,fase1)
 	
-	jal CLEAN_IMAGE
+	call CLEAN_IMAGE
 	load_position(POSITION)
 	
 	# Estrutura Condicional que verifica qual a ultima tecla
@@ -133,7 +153,7 @@ MOV2_DO:
 	movement_y_down(1,pikachu_front1)
 	verifica_muro_down()
 PRINT_DO:
-	jal PRINT_IMAGE
+	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -149,7 +169,7 @@ MOV_LEFT:
 	load_position(POSITION)
 	clean_image(1,fase1)
 	
-	jal CLEAN_IMAGE
+	call CLEAN_IMAGE
 	load_position(POSITION)
 	
 	# Estrutura Condicional que verifica qual a ultima tecla
@@ -165,7 +185,7 @@ MOV2_LE:
 	movement_x_left(1,pikachu_left1)
 	verifica_muro_left()
 PRINT_LE:
-	jal PRINT_IMAGE
+	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -181,7 +201,7 @@ MOV_RIGHT:
 	load_position(POSITION)
 	clean_image(1,fase1)
 	
-	jal CLEAN_IMAGE
+	call CLEAN_IMAGE
 	load_position(POSITION)
 	
 	# Estrutura Condicional que verifica qual a ultima tecla
@@ -197,7 +217,7 @@ MOV2_RI:
 	movement_x_right(1,pikachu_right1)
 	verifica_muro_right()
 PRINT_RI:
-	jal PRINT_IMAGE
+	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
