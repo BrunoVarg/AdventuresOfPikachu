@@ -141,41 +141,18 @@ la a1, %label
 #				#
 #################################
 
-.macro verifica_muro_up()
+.macro verifica_muro(%label)
 la a2, MURO
 lh t4, 2(a2)
-bgt s1,t4,CONTINUA_VMU
-addi s1, s1, 16
-sh s1, 2(a0)
-CONTINUA_VMU:
+lh t5, 6(a2)
+lh t6, 0(a2)
+lh s4, 4(a2)
+blt s1,t4,%label
+bgt s1,t5,%label
+blt s2,t6,%label
+bgt s2,s4,%label
 .end_macro
 
-.macro verifica_muro_down()
-la a2, MURO
-lh t4, 6(a2)
-blt s1,t4,CONTINUA_VMD
-addi s1, s1, -16
-sh s1, 2(a0)
-CONTINUA_VMD:
-.end_macro
-
-.macro verifica_muro_left()
-la a2, MURO
-lh t4, 0(a2)
-bge s2,t4,CONTINUA_VML
-addi s2, s2, 16
-sh s2, 0(a0)
-CONTINUA_VML:
-.end_macro
-
-.macro verifica_muro_right()
-la a2, MURO
-lh t4, 4(a2)
-blt s2,t4,CONTINUA_VMR
-addi s2, s2, -16
-sh s2, 0(a0)
-CONTINUA_VMR:
-.end_macro
 
 #################################
 #				#
@@ -214,7 +191,7 @@ la a5, %label
 add a5, a5, s7
 lb t5, 0(a5)		# Bloco do Mapa que a Sprite está
 la a2, BLOCOS_BLOQUEADOS
-li t6, 5		# Tamanho dos BLOCOS_BLOQUEADOS
+li t6, 11		# Tamanho dos BLOCOS_BLOQUEADOS
 li s4, 0		# Contador
 LOOP:
 	beq s4, t6, FIM
@@ -227,8 +204,25 @@ FIM:
 
 .end_macro
 
+.macro conta_pokebola(%label, %fase)
+la a6, NUM_POKEBOLA
+lb a5, %fase(a6)
+la s8, %label
+add s8, s8, s7
+lb t5, 0(s8)
+li s6, 20 
+beq t5, s6, SOMA
+j FIM
 
+SOMA: 
+	la s9, POKEBOLA
+	lb s10, 0(s9)
+	addi s10, s10, 1
+	sb s10, 0(s9)
 
+FIM:    
+	
+.end_macro
 
 #################################
 #				#

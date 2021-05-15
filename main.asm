@@ -1,22 +1,22 @@
 .data
-X: .string "\nX =  "
-Y: .string "\nY =  "
 POSITION: .half 152,186		# x e y inicial
-MURO: .half 70,24,248,202	# Coordenadas do muro
+MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
 BLOCO_ATUAL: .string "\nBLOCO ATUAL = "
-BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5
-FASE1: .byte 	2,2,1,0,0,0,0,0,1,2,2,
-        	2,2,1,0,0,0,0,0,1,2,2,
-        	1,1,1,0,0,0,0,0,1,1,1,
-        	1,0,0,0,1,0,0,0,0,0,1,
-        	1,0,2,2,0,0,0,0,2,0,1,
-        	1,0,2,2,2,0,0,0,0,2,1,
-        	1,0,0,2,2,0,0,0,0,0,1,
-        	1,0,1,0,0,0,0,0,1,0,1,
-        	1,0,0,0,0,0,0,0,2,0,1,
-        	1,1,1,1,0,0,0,1,1,1,1,
-        	2,2,2,1,0,0,0,1,2,2,2 
+BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
+POKEBOLA: .byte 0 
+NUM_POKEBOLA: .byte 3
+FASE1: .byte 	12,2,1,0,0,0,0,0,1,2,2,
+        	12,2,1,0,0,0,20,0,1,2,2,
+        	11,1,1,0,0,0,0,0,1,1,1,
+        	11,21,1,0,0,0,0,0,0,0,1,
+        	11,0,2,2,0,0,0,0,2,0,1,
+        	11,0,2,2,2,0,0,0,20,2,1,
+        	11,0,0,2,2,1,0,0,0,0,1,
+        	11,0,1,0,0,0,0,0,1,0,1,
+        	11,0,20,0,0,0,0,0,2,0,1,
+        	11,1,1,1,0,0,0,1,1,1,1,
+        	12,2,2,1,0,0,0,1,2,2,2 
 
 		
 .include "tiles.data"
@@ -30,8 +30,12 @@ FASE1: .byte 	2,2,1,0,0,0,0,0,1,2,2,
 .include "/sprites/pikachu/pikachu_back.data"
 .include "/sprites/pikachu/pikachu_back1.data"
 .include "fase1.data"
-
-
+.include "/sprites/numeros/ZERO.data"
+.include "/sprites/numeros/UM.data"
+.include "/sprites/numeros/DOIS.data"
+.include "/sprites/numeros/TRES.data"
+.include "/sprites/numeros/QUATRO.data"
+.include "/sprites/numeros/CINCO.data"
 .text
 .include "macro.asm"
 # Carrega a imagem1
@@ -66,7 +70,10 @@ call PRINT_MAPA
 PIKACHU:
 	load_values(152,186,1,pikachu_back)
 	call PRINT_IMAGE
-
+	load_values(268,48,1,TRES)
+	call PRINT_IMAGE
+	load_values(268,93,1,ZERO)
+	call PRINT_IMAGE
 KEYBOARD_LOOP:
 
 	li t1,0xFF200000
@@ -107,15 +114,18 @@ RESETA_MU:
 	
 MOV1_UP:
 	movement_y_up(1,pikachu_back)
-	verifica_muro_up()
+	verifica_muro(RESETA_MU)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_MU)
+	conta_pokebola(FASE1,0)
 	j PRINT_MU
+	
 MOV2_UP:
 	movement_y_up(1,pikachu_back1)
-	verifica_muro_up()
+	verifica_muro(RESETA_MU)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_MU)
+	conta_pokebola(FASE1,0)
 	
 PRINT_MU:
 	load_position(POSITION)
@@ -144,15 +154,33 @@ MOV_DOWN:
 	
 	ultima_tecla(MOV1_DO)
 	j MOV2_DO
+
+RESETA_DO:
+	la a5, POSITION
+	lh s5, 2(a5)
+	addi s5, s5, -16
+	sh s5, 2(a5)
+	j PRINT_DO		
 	
 MOV1_DO:
 	movement_y_down(1,pikachu_front)
-	verifica_muro_down()
+	verifica_muro(RESETA_DO)
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_DO)
+	conta_pokebola(FASE1,0)
 	j PRINT_DO
+	
 MOV2_DO:
 	movement_y_down(1,pikachu_front1)
-	verifica_muro_down()
+	verifica_muro(RESETA_DO)
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_DO)
+	conta_pokebola(FASE1,0)
+	
 PRINT_DO:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
 	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
@@ -176,15 +204,33 @@ MOV_LEFT:
 	
 	ultima_tecla(MOV1_LE)
 	j MOV2_LE
-	
+
+RESETA_LE:
+	la a5, POSITION
+	lh s5, 0(a5)
+	addi s5, s5, 16
+	sh s5, 0(a5)
+	j PRINT_LE	
+		
 MOV1_LE:
 	movement_x_left(1,pikachu_left)
-	verifica_muro_left()
+	verifica_muro(RESETA_LE)
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_LE)
+	conta_pokebola(FASE1,0)
 	j PRINT_LE
+	
 MOV2_LE:
 	movement_x_left(1,pikachu_left1)
-	verifica_muro_left()
+	verifica_muro(RESETA_LE)
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_LE)
+	conta_pokebola(FASE1,0)
+	
 PRINT_LE:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
 	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
@@ -208,15 +254,33 @@ MOV_RIGHT:
 	
 	ultima_tecla(MOV1_RI)
 	j MOV2_RI
+
+RESETA_RI:
+	la a5, POSITION
+	lh s5, 0(a5)
+	addi s5, s5, -16
+	sh s5, 0(a5)
+	j PRINT_RI	
 	
 MOV1_RI:
 	movement_x_right(1,pikachu_right)
-	verifica_muro_right()
+	verifica_muro(RESETA_RI)
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_RI)
+	conta_pokebola(FASE1,0)
 	j PRINT_RI
+	
 MOV2_RI:
 	movement_x_right(1,pikachu_right1)
-	verifica_muro_right()
+	verifica_muro(RESETA_RI)
+	bloco_atual()
+	verifica_bloco(FASE1,RESETA_RI)
+	conta_pokebola(FASE1,0)
+	
 PRINT_RI:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
 	call PRINT_IMAGE
 	j KEYBOARD_LOOP
 	
