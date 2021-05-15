@@ -6,11 +6,10 @@
 #				#
 #################################
 
-.macro print_background(%label,%frame)
+.macro print_background(%label)
 	li t1,0xFF000000	# endereco inicial da Memoria VGA - Frame 0
 	li t2,0xFF012C00	# endereco final - Frame 0
 	li t3,0
-	li t0,%frame
 	bgtz  t0, SOMA_PB
 	j INICIO_PB
 SOMA_PB:
@@ -33,15 +32,28 @@ FIM_PB:
 
 #################################
 #				#
-# 	Troca de frame		#
+# 	   Frames		#
 #				#
 #################################
 
-.macro change_frame(%frame)
+.macro change_frame()
 	li s0,0xFF200604	# Escolhe o Frame 0 ou 1
-	li t2,%frame		# inicio Frame
+	lw t2,0(s0)		# inicio Frame
+	xori t2, t2, 1
 	sw t2,0(s0)
 .end_macro
+
+.macro frame_atual()
+	li s0, 0xFF200604
+	lw t0, 0(s0)
+.end_macro
+
+.macro next_frame()
+	li s0, 0xFF200604
+	lw t2, 0(s0)
+	xori t0, t2,1
+.end_macro
+	
 
 #################################
 #				#
@@ -50,8 +62,7 @@ FIM_PB:
 #				#
 #################################
 
-.macro load_values(%x,%y,%frame,%label)
-li t0, %frame
+.macro load_values(%x,%y,%label)
 li s2, %x
 li s1, %y
 la a1, %label
@@ -77,11 +88,10 @@ beq t1,t0,%label
 #################################
 
 
-.macro clean_image(%frame,%label)
+.macro clean_image(%label)
 mv s2, t1
 mv s1, t2
 la a1, %label
-li t0, %frame
 .end_macro
 
 
@@ -101,35 +111,31 @@ lh t1, 0(a0)
 lh t2, 2(a0)
 .end_macro
 
-.macro movement_y_up(%frame,%label)
-li t0,%frame
+.macro movement_y_up(%label)
 addi s1,t2, -16
 sh s1, 2(a0)
 mv s2, t1
 la a1,%label
 .end_macro
 
-.macro movement_y_down(%frame,%label)
-li t0,%frame
+.macro movement_y_down(%label)
 addi s1,t2, 16
 sh s1, 2(a0)
 mv s2, t1
 la a1,%label
 .end_macro
 
-.macro movement_x_left(%frame,%label)
+.macro movement_x_left(%label)
 addi s2,t1, -16
 sh s2, 0(a0)
 mv s1, t2
-li t0,%frame
 la a1, %label
 .end_macro
 
-.macro movement_x_right(%frame,%label)
+.macro movement_x_right(%label)
 addi s2,t1, 16
 sh s2, 0(a0)
 mv s1, t2
-li t0,%frame
 la a1, %label
 .end_macro
 
@@ -156,7 +162,7 @@ bgt s2,s4,%label
 
 #################################
 #				#
-# 	ColisÃ£o Blocos		#
+#     Colisão de Blocos		#
 # Borda Lateral = 71 (preto)	#
 # Borda Superior = 24 (muro)	#
 # Pixels = 16			#
@@ -226,12 +232,12 @@ FIM:
 
 #################################
 #				#
-#   Verifica a Ãºltima tecla, 	#
+#   Verifica a última tecla, 	#
 #    se for igual, printa	#
 #   uma sprite diferente,	#
 #     usando um contador	#
 #      que diferencia		#
-#      (Ã­mpar ou par)		#
+#      (ímpar ou par)		#
 #				#
 #################################
 
@@ -254,7 +260,6 @@ beqz t0, %label
 #				#
 #################################
 
-.macro load_fase(%label,%frame)
+.macro load_fase(%label)
 la a0, %label
-li t4, %frame
 .end_macro

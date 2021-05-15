@@ -2,25 +2,26 @@
 POSITION: .half 152,186		# x e y inicial
 MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
-BLOCO_ATUAL: .string "\nBLOCO ATUAL = "
 BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
 POKEBOLA: .byte 0 
 NUM_POKEBOLA: .byte 3
-FASE1: .byte 	12,2,1,0,0,0,0,0,1,2,2,
-        	12,2,1,0,0,0,20,0,1,2,2,
-        	11,1,1,0,0,0,0,0,1,1,1,
-        	11,21,1,0,0,0,0,0,0,0,1,
-        	11,0,2,2,0,0,0,0,2,0,1,
-        	11,0,2,2,2,0,0,0,20,2,1,
-        	11,0,0,2,2,1,0,0,0,0,1,
-        	11,0,1,0,0,0,0,0,1,0,1,
-        	11,0,20,0,0,0,0,0,2,0,1,
-        	11,1,1,1,0,0,0,1,1,1,1,
-        	12,2,2,1,0,0,0,1,2,2,2 
+
+FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
+        	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
+        	11, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1,
+        	11,21, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+        	11, 0, 2, 2, 0, 0, 0, 0, 2, 0, 1,
+        	11, 0, 2, 2, 2, 0, 0, 0,20, 2, 1,
+        	11, 0, 0, 2, 2, 1, 0, 0, 0, 0, 1,
+        	11, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,
+        	11, 0,20, 0, 0, 0, 0, 0, 2, 0, 1,
+        	11, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+        	12, 2, 2, 1, 0, 0, 0, 1, 2, 2, 2 
 
 		
 .include "tiles.data"
 .include "Capa.data"
+.include "fase1.data"
 .include "/sprites/pikachu/pikachu_front.data"
 .include "/sprites/pikachu/pikachu_front1.data"
 .include "/sprites/pikachu/pikachu_right.data"
@@ -29,19 +30,21 @@ FASE1: .byte 	12,2,1,0,0,0,0,0,1,2,2,
 .include "/sprites/pikachu/pikachu_left1.data"
 .include "/sprites/pikachu/pikachu_back.data"
 .include "/sprites/pikachu/pikachu_back1.data"
-.include "fase1.data"
 .include "/sprites/numeros/ZERO.data"
 .include "/sprites/numeros/UM.data"
 .include "/sprites/numeros/DOIS.data"
 .include "/sprites/numeros/TRES.data"
 .include "/sprites/numeros/QUATRO.data"
 .include "/sprites/numeros/CINCO.data"
+
 .text
 .include "macro.asm"
 # Carrega a imagem1
 INICIO:
-	print_background(Capa,0)	# Printa a capa na frame 0
-	print_background(fase1,1)	# Printa a fase 1 na frame 1
+	frame_atual()
+	print_background(Capa)		# Printa a capa na frame inicial
+	next_frame()
+	print_background(fase1)		# Printa a fase 1 na próxima frame
 
 KEYBOARD_1:
 	# Descomentar no fim	
@@ -52,28 +55,31 @@ KEYBOARD_1:
   	#j PROX_LABEL 		# vai para a próxima LABEL se pressionar uma tecla
   	
 PROX_LABEL:
-	change_frame(1)
+	change_frame()
 	
 j PRINT_1
 .include "print.asm"	
 .include "clean.asm"
 .include "mapa.asm"	
 PRINT_1:
-
-	# 1 - Percorrer o vetor de memória da FASE 1, verificando qual o número que está lá
-	# 2 - Printar na coordenada exata do mapa, o bloco correspondente
-	# 3 - Verificar colisão	
 	
-load_fase(FASE1,1)
+	
+load_fase(FASE1)
+frame_atual()
 call PRINT_MAPA			
 	
 PIKACHU:
-	load_values(152,186,1,pikachu_back)
+	frame_atual()
+	load_values(152,186,pikachu_back)
 	call PRINT_IMAGE
-	load_values(268,48,1,TRES)
+	frame_atual()
+	load_values(268,48,TRES)
 	call PRINT_IMAGE
-	load_values(268,93,1,ZERO)
+	frame_atual()
+	load_values(268,93,ZERO)
 	call PRINT_IMAGE
+	
+	
 KEYBOARD_LOOP:
 
 	li t1,0xFF200000
@@ -95,7 +101,8 @@ KEYBOARD_LOOP:
 MOV_UP:
 
 	load_position(POSITION)
-	clean_image(1,fase1)
+	frame_atual()
+	clean_image(fase1)
 	
 	call CLEAN_IMAGE
 	load_position(POSITION)
@@ -113,7 +120,8 @@ RESETA_MU:
 	j PRINT_MU
 	
 MOV1_UP:
-	movement_y_up(1,pikachu_back)
+	frame_atual()
+	movement_y_up(pikachu_back)
 	verifica_muro(RESETA_MU)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_MU)
@@ -121,7 +129,8 @@ MOV1_UP:
 	j PRINT_MU
 	
 MOV2_UP:
-	movement_y_up(1,pikachu_back1)
+	frame_atual()
+	movement_y_up(pikachu_back1)
 	verifica_muro(RESETA_MU)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_MU)
@@ -145,7 +154,8 @@ PRINT_MU:
 MOV_DOWN:
 
 	load_position(POSITION)
-	clean_image(1,fase1)
+	frame_atual()
+	clean_image(fase1)
 	
 	call CLEAN_IMAGE
 	load_position(POSITION)
@@ -163,7 +173,8 @@ RESETA_DO:
 	j PRINT_DO		
 	
 MOV1_DO:
-	movement_y_down(1,pikachu_front)
+	frame_atual()
+	movement_y_down(pikachu_front)
 	verifica_muro(RESETA_DO)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_DO)
@@ -171,7 +182,8 @@ MOV1_DO:
 	j PRINT_DO
 	
 MOV2_DO:
-	movement_y_down(1,pikachu_front1)
+	frame_atual()
+	movement_y_down(pikachu_front1)
 	verifica_muro(RESETA_DO)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_DO)
@@ -195,7 +207,8 @@ PRINT_DO:
 MOV_LEFT:
 
 	load_position(POSITION)
-	clean_image(1,fase1)
+	frame_atual()
+	clean_image(fase1)
 	
 	call CLEAN_IMAGE
 	load_position(POSITION)
@@ -213,7 +226,8 @@ RESETA_LE:
 	j PRINT_LE	
 		
 MOV1_LE:
-	movement_x_left(1,pikachu_left)
+	frame_atual()
+	movement_x_left(pikachu_left)
 	verifica_muro(RESETA_LE)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_LE)
@@ -221,7 +235,8 @@ MOV1_LE:
 	j PRINT_LE
 	
 MOV2_LE:
-	movement_x_left(1,pikachu_left1)
+	frame_atual()
+	movement_x_left(pikachu_left1)
 	verifica_muro(RESETA_LE)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_LE)
@@ -245,7 +260,8 @@ PRINT_LE:
 MOV_RIGHT:
 
 	load_position(POSITION)
-	clean_image(1,fase1)
+	frame_atual()
+	clean_image(fase1)
 	
 	call CLEAN_IMAGE
 	load_position(POSITION)
@@ -263,7 +279,8 @@ RESETA_RI:
 	j PRINT_RI	
 	
 MOV1_RI:
-	movement_x_right(1,pikachu_right)
+	frame_atual()
+	movement_x_right(pikachu_right)
 	verifica_muro(RESETA_RI)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_RI)
@@ -271,7 +288,8 @@ MOV1_RI:
 	j PRINT_RI
 	
 MOV2_RI:
-	movement_x_right(1,pikachu_right1)
+	frame_atual()
+	movement_x_right(pikachu_right1)
 	verifica_muro(RESETA_RI)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_RI)
