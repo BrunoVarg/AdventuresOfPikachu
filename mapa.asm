@@ -2,7 +2,7 @@
 #################################
 #				#
 # 	a0 = Mapa		#
-# 	t4 = Frame		#
+# 	t0 = Frame		#
 #				#
 #################################
 PRINT_MAPA:
@@ -10,15 +10,15 @@ PRINT_MAPA:
 	li s4, 25		# Y inicial dentro do muro
 	li a3, 11
 	li a4, 0
-	li t0,0			# Contador 1	Para quando chegar em 121		
+	li t4, 0			# Contador 1	Para quando chegar em 121		
 	
 PRINT_MAPA_DENTRO:
 	li s10, 0
 	li t1, 121
-	beq t0, t1, FIM_PM	
+	beq t4, t1, FIM_PM	
 
 	lb t2, 0(a0)		# t2 = 1
-	addi t0,t0,1
+	addi t4,t4,1
 	
 PRINTA_BLOCO:
 
@@ -30,7 +30,7 @@ PRINTA_BLOCO:
 	
 	add a1,a1,s0		# Para no endereço inicial que quer printar
 	li s1,0xFF000000	# endereco inicial da Memoria VGA - Frame 0
-	bgtz  t4, FRAME1_PB	# Verifica qual a frame, se for 1, ele soma 0x00100000 ao 0xFF000000
+	bgtz  t0, FRAME1_PB	# Verifica qual a frame, se for 1, ele soma 0x00100000 ao 0xFF000000
 	j START1_PB
 FRAME1_PB:
 	li s2, 0x00100000
@@ -44,7 +44,7 @@ START1_PB:
 	add s1,s1, s5 		# Endereço Inicial + 320* Altura
 	add s1,s1, s3 		# Endereço Inicial + 320*Altura + Largura
 PRINTAR_PB:
-	li s7, 256		# Área do bloco, onde o contador precisa parar
+	li s7, 256		# �?rea do bloco, onde o contador precisa parar
 	beq t5, s7,ULTIMA_PB
 	addi s9,s9, 4
 	addi t5,t5, 4	
