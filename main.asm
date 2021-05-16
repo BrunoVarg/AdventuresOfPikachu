@@ -4,8 +4,8 @@ MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
 BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
 POKEBOLA: .byte 0 
-NUM_POKEBOLA: .byte 3             #Adicionar quant pokebolas por fase
-PEGOU_POKEBOLA: .byte 0
+NUM_POKEBOLA: .byte 3		# Adicionar quantidade de pokebolas por fase
+PEGOU_POKEBOLA: .byte 0		# Sempre zerar a cada nova fase		
 PEGOU_CHAVE: .byte 0 
 
 FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
@@ -64,6 +64,7 @@ INICIO:
 
 KEYBOARD_1:
 	# Descomentar no fim	
+	
 	#li t1,0xFF200000	# carrega o endereço de controle do KDMMIO
 	#lw t0,0(t1)		# Le bit de Controle Teclado
 	#andi t0,t0,0x0001	# mascara o bit menos significativo
@@ -72,6 +73,13 @@ KEYBOARD_1:
   	
 PROX_LABEL:
 	change_frame()
+	
+##############################################################################################################################	
+#															     #
+#	   						FASE 1 							             #
+#															     #
+##############################################################################################################################
+
 	next_frame()
 	print_background(fase1)
 	

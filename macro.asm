@@ -14,16 +14,16 @@
 	j INICIO_PB
 SOMA_PB:
 	li t0, 0x00100000
-	add t1,t1,t0		# EndereÃ§o Inicial - Frame 1 - 0xFF100000
-	add t2,t2,t0		# EndereÃ§o Final - Frame 1 - 0xFF112C00
+	add t1,t1,t0		# Endereço Inicial - Frame 1 - 0xFF100000
+	add t2,t2,t0		# Endereço Final - Frame 1 - 0xFF112C00
 INICIO_PB:
 	 
-	la s1,%label		# endereÃ§o dos dados da tela na memoria
-	addi s1,s1,8		# primeiro pixels depois das informaÃ§Ãµes de nlin ncol
-LOOP1_PB: beq t1,t2,FIM_PB	# Se for o Ãºltimo endereÃ§o entÃ£o sai do loop
+	la s1,%label		# endereço dos dados da tela na memoria
+	addi s1,s1,8		# primeiro pixels depois das informações de nlin ncol
+LOOP1_PB: beq t1,t2,FIM_PB	# Se for o último endereço então sai do loop
 	lw t3,0(s1)		# le um conjunto de 4 pixels : word
 	sw t3,0(t1)		# escreve a word na memÃ³ria VGA
-	addi t1,t1,4		# soma 4 ao endereÃ§o
+	addi t1,t1,4		# soma 4 ao endereço
 	addi s1,s1,4
 	j LOOP1_PB		# volta a verificar
 FIM_PB:
@@ -142,7 +142,7 @@ la a1, %label
 #################################
 #				#
 #				#
-#	   COLISÃƒO		#
+#	   COLISÃO		#
 #				#
 #				#
 #################################
@@ -191,7 +191,20 @@ mul s7, s4, s11
 add s7, s7, s6
 .end_macro
 
-# t0, s2,s1, a1
+#################################
+#				#
+#   Macro que verifica qual o	#
+#	próximo bloco		#
+#   comparando com a matriz	#
+#				#
+#  %Label = Matriz		#
+#				#
+#  %Condicional = Label que ele	#
+#  vai pular caso for um bloco	#
+#     que não pode passar	#
+#				#
+#################################
+
 .macro verifica_bloco(%label, %condicional)
 la a5, %label
 add a5, a5, s7
@@ -209,6 +222,23 @@ LOOP:
 FIM:
 
 .end_macro
+
+#################################
+#				#
+#   Macro que vai contar a 	#
+#   quantidade de pokebola	#
+#   que o player pegou		#
+#   				#
+#   label = matriz		#
+#   fase = Imediato referente	#
+# ao número máximo de pokebola	#
+#  por nível (Olhar na memória	#
+#    de dados NUM_POKEBOLA)	#
+#				#
+#   x e y = Coordenadas do baú	#
+#      que vai ser printado	#
+#				#
+#################################
 
 .macro conta_pokebola(%label, %fase, %x,%y)       # X e Y , para printar baú após coleta de todas as pokebolas
 la a6, NUM_POKEBOLA
@@ -290,6 +320,21 @@ FIM:
 	
 .end_macro
 
+#################################
+#				#
+#   Macro que vai verificar	#
+#   se o player pegou a chave	#
+#	    do baú		#
+#				#
+#   %x e %y - Coordenada pra	#
+#   	printar o baú		#
+#				#
+# %xporta e %yporta -coordenada	#
+#	que vai printar a 	#
+#	   porta aberta		#
+#				#
+#################################
+
 .macro pegou_chave(%x,%y,%xporta,%yporta)       # Coordenadas do baú     
 	li a4,21
 	la t3,PEGOU_POKEBOLA
@@ -315,6 +360,17 @@ PRINTA_BAU:
 
 FIM:
 .end_macro 
+
+#################################
+#				#
+#     Macro que vai detectar	#
+#   se o player pegou a chave	#
+#            do baú,		#
+# e quando chegar na coordenada	#
+#     x e y, vai para a 	#
+#	próxima fase
+#				#
+#################################
 
 .macro proxima_fase(%x,%y,%label)
 	load_position(POSITION)
@@ -361,9 +417,9 @@ beqz t0, %label
 #################################
 #				#
 #	Carrega a label		#
-#	e a frame para usar	#
-#	no procedimento		#
-#	PRINT_MAPA		#
+#     e a frame para usar	#
+#      no procedimento		#
+#	 PRINT_MAPA		#
 #				#
 #################################
 
