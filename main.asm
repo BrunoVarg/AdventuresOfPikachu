@@ -4,7 +4,9 @@ MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
 BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
 POKEBOLA: .byte 0 
-NUM_POKEBOLA: .byte 3
+NUM_POKEBOLA: .byte 3             #Adicionar quant pokebolas por fase
+PEGOU_POKEBOLA: .byte 0
+PEGOU_CHAVE: .byte 0 
 
 FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
@@ -18,6 +20,17 @@ FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	11, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
         	12, 2, 2, 1, 0, 0, 0, 1, 2, 2, 2 
 
+FASE2: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
+        	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
+        	11, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1,
+        	11,20, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+        	11, 0, 2, 2,21, 0, 0, 0, 2, 0, 1,
+        	11, 0, 2, 2, 2, 0, 0, 0, 0, 2, 1,
+        	11, 0, 0, 2, 2, 1, 0, 0, 0, 0, 1,
+        	11, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,
+        	11, 0, 0, 0, 0, 0, 0, 0,20, 0, 1,
+        	11, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
+        	12, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1 
 		
 .include "tiles.data"
 .include "Capa.data"
@@ -36,6 +49,9 @@ FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
 .include "/sprites/numeros/TRES.data"
 .include "/sprites/numeros/QUATRO.data"
 .include "/sprites/numeros/CINCO.data"
+.include "/sprites/BauAberto.data"
+.include "/sprites/BauAbertoChave.data"
+.include "/sprites/PortaAberta.data"
 
 .text
 .include "macro.asm"
@@ -56,6 +72,8 @@ KEYBOARD_1:
   	
 PROX_LABEL:
 	change_frame()
+	next_frame()
+	print_background(fase1)
 	
 j PRINT_1
 .include "print.asm"	
@@ -78,7 +96,7 @@ PIKACHU:
 	frame_atual()
 	load_values(268,93,ZERO)
 	call PRINT_IMAGE
-	
+
 	
 KEYBOARD_LOOP:
 
@@ -125,7 +143,6 @@ MOV1_UP:
 	verifica_muro(RESETA_MU)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_MU)
-	conta_pokebola(FASE1,0)
 	j PRINT_MU
 	
 MOV2_UP:
@@ -134,13 +151,17 @@ MOV2_UP:
 	verifica_muro(RESETA_MU)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_MU)
-	conta_pokebola(FASE1,0)
+
+
 	
 PRINT_MU:
 	load_position(POSITION)
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
+	conta_pokebola(FASE1,0,88,65) 
+	pegou_chave(88,65,152,13)
+	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -178,7 +199,6 @@ MOV1_DO:
 	verifica_muro(RESETA_DO)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_DO)
-	conta_pokebola(FASE1,0)
 	j PRINT_DO
 	
 MOV2_DO:
@@ -187,13 +207,16 @@ MOV2_DO:
 	verifica_muro(RESETA_DO)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_DO)
-	conta_pokebola(FASE1,0)
+
 	
 PRINT_DO:
 	load_position(POSITION)
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
+	conta_pokebola(FASE1,0,88,65)  
+	pegou_chave(88,65,152,13)
+	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -231,7 +254,6 @@ MOV1_LE:
 	verifica_muro(RESETA_LE)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_LE)
-	conta_pokebola(FASE1,0)
 	j PRINT_LE
 	
 MOV2_LE:
@@ -240,13 +262,16 @@ MOV2_LE:
 	verifica_muro(RESETA_LE)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_LE)
-	conta_pokebola(FASE1,0)
+
 	
 PRINT_LE:
 	load_position(POSITION)
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
+	conta_pokebola(FASE1,0,88,65) 
+	pegou_chave(88,65,152,13) 
+	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
 	#t0 = frame
@@ -284,7 +309,6 @@ MOV1_RI:
 	verifica_muro(RESETA_RI)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_RI)
-	conta_pokebola(FASE1,0)
 	j PRINT_RI
 	
 MOV2_RI:
@@ -293,19 +317,36 @@ MOV2_RI:
 	verifica_muro(RESETA_RI)
 	bloco_atual()
 	verifica_bloco(FASE1,RESETA_RI)
-	conta_pokebola(FASE1,0)
+
 	
 PRINT_RI:
 	load_position(POSITION)
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
+	conta_pokebola(FASE1,0,88,65)  
+	pegou_chave(88,65,152,13)
+	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
-	#t0 = frame
+	#t0 = frames
 	#s2 = x
 	#s1 = y
 	#a1 = label
+	
+##############################################################################################################################	
+#															     #
+#	   						FASE 2 							             #
+#															     #
+##############################################################################################################################	
+
+INICIO_FASE2:
+	change_frame()
+	frame_atual()
+	print_background(fase1)		# Printa a fase 1 na próxima frame
+	frame_atual()
+	load_fase(FASE2)
+	call PRINT_MAPA
 	
 # devolve o controle ao sistema operacional
 FIM:

@@ -210,7 +210,7 @@ FIM:
 
 .end_macro
 
-.macro conta_pokebola(%label, %fase)
+.macro conta_pokebola(%label, %fase, %x,%y)       # X e Y , para printar baú após coleta de todas as pokebolas
 la a6, NUM_POKEBOLA
 lb a5, %fase(a6)
 la s8, %label
@@ -225,9 +225,116 @@ SOMA:
 	lb s10, 0(s9)
 	addi s10, s10, 1
 	sb s10, 0(s9)
+	li s11, 0 
+	sb s11,0(s8)
 
+PRINTAR: 
+	li a4,0
+	li s4,1
+	li a6,2
+	li s6,3
+	li s7,4
+	li s8,5 
+	beq s10, a4, PRINT_0
+	beq s10, s4, PRINT_1
+	beq s10, a6, PRINT_2
+	beq s10, s6, PRINT_3
+	beq s10, s7, PRINT_4
+	beq s10, s8, PRINT_5
+	
+PRINT_0:
+	frame_atual()
+	load_values(268,93,ZERO)
+	call PRINT_IMAGE
+	j ABRIR_BAU
+PRINT_1:
+	frame_atual()
+	load_values(268,93,UM)
+	call PRINT_IMAGE
+	j ABRIR_BAU
+PRINT_2:
+	frame_atual()
+	load_values(268,93,DOIS)
+	call PRINT_IMAGE
+	j ABRIR_BAU
+PRINT_3:
+	frame_atual()
+	load_values(268,93,TRES)
+	call PRINT_IMAGE
+	j ABRIR_BAU
+PRINT_4:
+	frame_atual()
+	load_values(268,93,QUATRO)
+	call PRINT_IMAGE
+	j ABRIR_BAU
+PRINT_5:
+	frame_atual()
+	load_values(268,93,CINCO)
+	call PRINT_IMAGE
+	j ABRIR_BAU
+
+ABRIR_BAU:	
+	beq s10,a5,PRINTAR_BAU
+	j FIM 
+
+PRINTAR_BAU:
+	frame_atual()
+	load_values(%x,%y,BauAbertoChave)      
+	call PRINT_IMAGE
+	la t3,PEGOU_POKEBOLA
+	lb t6,0(t3)
+	addi t6,t6,1 
+	sb t6,0(t3)
+							
 FIM:    
 	
+.end_macro
+
+.macro pegou_chave(%x,%y,%xporta,%yporta)       # Coordenadas do baú     
+	li a4,21
+	la t3,PEGOU_POKEBOLA
+	lb t6,0(t3)
+	bgtz t6, PROX_PASSO
+	j FIM
+	
+PROX_PASSO:
+	beq a4,t5,PRINTA_BAU
+	j FIM 
+	
+PRINTA_BAU:
+	frame_atual()
+	load_values(%x,%y,BauAberto)          
+	call PRINT_IMAGE
+	frame_atual()
+	load_values(%xporta,%yporta,PortaAberta)          
+	call PRINT_IMAGE
+	la s4, PEGOU_CHAVE
+	lb s5, 0(s4)
+	addi s5, s5,1
+	sb s5,0(s4)
+
+FIM:
+.end_macro 
+
+.macro proxima_fase(%x,%y,%label)
+	load_position(POSITION)
+	li s7, %x
+	li s6, %y
+	la s4, PEGOU_CHAVE
+	lb s5, 0(s4)
+	bgtz s5,PASSOU_UM
+        j FIM 
+        
+PASSOU_UM:
+	beq s7,t1,PASSOU_DOIS
+	j FIM 
+PASSOU_DOIS:
+	beq s6,t2,PASSOU_TRES
+	j FIM 
+PASSOU_TRES:
+	j %label 
+FIM:
+
 .end_macro
 
 #################################
