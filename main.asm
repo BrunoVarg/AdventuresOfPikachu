@@ -1,7 +1,7 @@
 .data
 POSITION: .half 152,186		# x e y inicial
 MURO: .half 70,24,248,201	# Coordenadas do muro
-CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for Ìmpar ou par
+CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for √≠mpar ou par
 BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
 POKEBOLA: .byte 0 
 NUM_POKEBOLA: .byte 3		# Adicionar quantidade de pokebolas por fase
@@ -61,16 +61,16 @@ INICIO:
 	frame_atual()
 	print_background(Capa)		# Printa a capa na frame inicial
 	next_frame()
-	print_background(fase1)		# Printa a fase 1 na prÛxima frame
+	print_background(fase1)		# Printa a fase 1 na pr√≥xima frame
 
 KEYBOARD_1:
 	# Descomentar no fim	
 	
-	#li t1,0xFF200000	# carrega o endereÁo de controle do KDMMIO
+	#li t1,0xFF200000	# carrega o endere√ßo de controle do KDMMIO
 	#lw t0,0(t1)		# Le bit de Controle Teclado
 	#andi t0,t0,0x0001	# mascara o bit menos significativo
-   	#beq t0,zero,KEYBOARD   # Se n„o h· tecla pressionada ent„o volta pro LOOP
-  	#j PROX_LABEL 		# vai para a prÛxima LABEL se pressionar uma tecla
+   	#beq t0,zero,KEYBOARD   # Se n√£o h√° tecla pressionada ent√£o volta pro LOOP
+  	#j PROX_LABEL 		# vai para a pr√≥xima LABEL se pressionar uma tecla
   	
 PROX_LABEL:
 	change_frame()
@@ -135,7 +135,7 @@ MOV_UP:
 	load_position(POSITION)
 	
 	# Estrutura Condicional que verifica qual a ultima tecla
-	# atravÈs de um contador que diz se È Ìmpar ou par
+	# atrav√©s de um contador que diz se √© √≠mpar ou par
 	ultima_tecla(MOV1_UP)
 	j MOV2_UP
 
@@ -353,17 +353,17 @@ INICIO_FASE2:
 
 	change_frame()
 	frame_atual()
-	print_background(fase2)		# Printa a fase 1 na prÛxima frame
+	print_background(fase2)		# Printa a fase 1 na pr√≥xima frame
 	frame_atual()
 	load_fase(FASE2)
 	call PRINT_MAPA
 	
 RESETA_FASE2:
 	la a2, POSITION
-	li s4, 152		# Coordenada Inicial X - PosiÁ„o Pikachu
+	li s4, 152		# Coordenada Inicial X - Posi√ß√£o Pikachu
 	sh s4, 0(a2)
-	li s4, 186
-	sh s4, 2(a2)		# Coordenada Inicial Y - PosiÁ„o Pikachu
+	li s4, 186		# Coordenada Inicial Y - Posi√ß√£o Pikachu
+	sh s4, 2(a2)
 	
 	la a2, CONTADOR
 	li s4, 0
