@@ -20,8 +20,8 @@ FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	11, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
         	12, 2, 2, 1, 0, 0, 0, 1, 2, 2, 2 
 
-FASE2: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
-        	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
+FASE2: .byte 	10, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2,
+        	10, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2,
         	11, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1,
         	11,20, 1, 0, 0, 0, 0, 0, 0, 0, 1,
         	11, 0, 2, 2,21, 0, 0, 0, 2, 0, 1,
@@ -35,6 +35,7 @@ FASE2: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
 .include "tiles.data"
 .include "Capa.data"
 .include "fase1.data"
+.include "fase2.data"
 .include "/sprites/pikachu/pikachu_front.data"
 .include "/sprites/pikachu/pikachu_front1.data"
 .include "/sprites/pikachu/pikachu_right.data"
@@ -337,7 +338,7 @@ PRINT_RI:
 	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
-	#t0 = frames
+	#t0 = frame
 	#s2 = x
 	#s1 = y
 	#a1 = label
@@ -349,12 +350,49 @@ PRINT_RI:
 ##############################################################################################################################	
 
 INICIO_FASE2:
+
 	change_frame()
 	frame_atual()
-	print_background(fase1)		# Printa a fase 1 na próxima frame
+	print_background(fase2)		# Printa a fase 1 na próxima frame
 	frame_atual()
 	load_fase(FASE2)
 	call PRINT_MAPA
+	
+RESETA_FASE2:
+	la a2, POSITION
+	li s4, 152		# Coordenada Inicial X - Posição Pikachu
+	sh s4, 0(a2)
+	li s4, 186
+	sh s4, 2(a2)		# Coordenada Inicial Y - Posição Pikachu
+	
+	la a2, CONTADOR
+	li s4, 0
+	sw s4, 0(a2)		# Reseta o Contador
+	
+	la a2, POKEBOLA
+	li s4, 0
+	sb s4, 0(a2)		# Reseta as Pokebolas
+	
+	la a2, PEGOU_POKEBOLA
+	li s4, 0
+	sb s4, 0(a2)		# Reseta se Pegou as Pokebolas
+	
+	la a2, PEGOU_CHAVE
+	li s4, 0
+	sb s4, 0(a2)		# Reseta a chave
+	
+	
+	frame_atual()
+	load_values(152,186,pikachu_back)
+	call PRINT_IMAGE
+	frame_atual()
+	load_values(268,48,TRES)
+	call PRINT_IMAGE
+	frame_atual()
+	load_values(268,93,ZERO)
+	call PRINT_IMAGE
+	
+	
 	
 # devolve o controle ao sistema operacional
 FIM:
