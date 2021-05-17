@@ -210,7 +210,7 @@ la a5, %label
 add a5, a5, s7
 lb t5, 0(a5)		# Bloco do Mapa que a Sprite está
 la a2, BLOCOS_BLOQUEADOS
-li t6, 11		# Tamanho dos BLOCOS_BLOQUEADOS
+li t6, 12		# Tamanho dos BLOCOS_BLOQUEADOS
 li s4, 0		# Contador
 LOOP:
 	beq s4, t6, FIM
@@ -325,7 +325,63 @@ PRINTAR_BAU:
 FIM:    
 	
 .end_macro
+.macro printa_caterpie()
+	la s10 , PRINTOU_CATERPIE
+	la a4, PEGOU_POKEBOLA
+	lb s5, 0(a4)
+	bgtz s5, VERIFICAXY
+    	j FIM_PC
+    	
+VERIFICAXY:
+	li a6, 88      # coordenada do x da esquerda
+	li a3, 216     #coordenada do x da direita
+	li a7, 153     #coordenada do y 
+	la s6 , POSITION 
+	lh s8, 0(s6)        # x do pikachu
+	lh s9, 2(s6)        # y do pikachu 
+	beq s8, a6 , PASSOU_X_ESQUERDA
+	#beq s8, a3 , PASSOU_X_DIREITA
+	j FIM_PC
+###################################################################	
+#PASSOU_X_DIREITA:						 #
+#	beq s9,a7,PASSOU_Y_DIREITA				 #
+#	j FIM_PC						 #
+#PASSOU_Y_DIREITA:						 #	
+#	lb s11, 0(s10)						 #
+#	beqz s11, PRINTA_CATERPIE_DIREITA			 #     ERRO DE BRANCH !!!!! 
+#	j FIM_PC  						 #
+#PRINTA_CATERPIE_DIREITA:					 #
+#	la t5, FASE2						 #
+#	li t4, 12						 #
+#	sb t4, 109(t5)                                           #
+#	frame_atual()                                            #
+#	load_values(232,169,Caterpie)                            #
+#	call PRINT_IMAGE                                         #
+#	j FIM_PC						 #
+##################################################################	
+PASSOU_X_ESQUERDA:
+ 	beq s9,a7, PASSOU_Y_ESQUERDA
+ 	j FIM_PC
+ 		 	
+PASSOU_Y_ESQUERDA:
+	lb s11, 0(s10)
+	beqz s11, PRINTA_CATERPIE_ESQUERDA
+	j FIM_PC
+	
+PRINTA_CATERPIE_ESQUERDA:
+	la t5, FASE2
+	li t4, 12
+	sb t4, 100(t5)
+	frame_atual()
+	load_values(88,169,Caterpie)
+	call PRINT_IMAGE
+	li s4 , 1
+	sb s4, 0(s10)
+	j FIM_PC
+	
 
+FIM_PC:
+.end_macro 
 #################################
 #				#
 #   Macro que vai verificar	#

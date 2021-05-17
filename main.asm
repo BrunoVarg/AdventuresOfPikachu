@@ -2,12 +2,12 @@
 POSITION: .half 152,186		# x e y inicial
 MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
-BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
+BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21, 22
 POKEBOLA: .byte 0 
 NUM_POKEBOLA: .byte 3, 4	# Adicionar quantidade de pokebolas por fase
 PEGOU_POKEBOLA: .byte 0		# Sempre zerar a cada nova fase		
 PEGOU_CHAVE: .byte 0 
-
+PRINTOU_CATERPIE: .byte 0 
 FASE1: .byte 	
 		12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
@@ -31,7 +31,7 @@ FASE2: .byte
         	15, 5, 5, 5, 5, 5, 5, 6, 5, 5, 5,
         	12, 2, 0, 3, 2, 3, 2, 0, 3, 2, 2,
         	20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        	13, 0, 2, 2, 3, 2, 3, 2, 3, 0, 0,
+        	11, 0, 1, 2, 3, 2, 1, 2, 3, 1, 0,
         	21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		
 .include "tiles.data"
@@ -463,6 +463,7 @@ PRINT_MU2:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178) 
+	printa_caterpie()
 	pegou_chave(72,178,88,13)
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
@@ -518,6 +519,7 @@ PRINT_DO2:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178)  
+	printa_caterpie()
 	pegou_chave(72,178,88,13)
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
@@ -573,6 +575,7 @@ PRINT_LE2:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178) 
+	printa_caterpie()
 	pegou_chave(72,178,88,13) 
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
@@ -628,6 +631,7 @@ PRINT_RI2:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178)  
+	printa_caterpie()
 	pegou_chave(72,178,88,13)
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
