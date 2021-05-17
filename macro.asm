@@ -153,10 +153,10 @@ lh t4, 2(a2)
 lh t5, 6(a2)
 lh t6, 0(a2)
 lh s4, 4(a2)
-blt s1,t4,%label
-bgt s1,t5,%label
-blt s2,t6,%label
-bgt s2,s4,%label
+ble s1,t4,%label
+bge s1,t5,%label
+ble s2,t6,%label
+bge s2,s4,%label
 .end_macro
 
 

@@ -9,7 +9,7 @@ PEGOU_POKEBOLA: .byte 0		# Sempre zerar a cada nova fase
 PEGOU_CHAVE: .byte 0 
 
 FASE1: .byte 	
-	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
+		12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
         	11, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1,
         	11,21, 1, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -22,17 +22,17 @@ FASE1: .byte
         	12, 2, 2, 1, 0, 0, 0, 1, 2, 2, 2 
 
 FASE2: .byte 
-	15, 6, 5, 5, 5, 5, 20, 2, 0, 0, 0,
-        	15, 6, 7, 7, 7, 7, 0, 0, 0, 2, 20,
-        	15, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-        	10, 0, 0, 0, 0, 0, 0, 0, 0, 20, 5,
+		15, 8, 5, 5, 5, 5,20, 2, 0, 0, 0,
+        	15, 8, 9, 9, 9, 9, 0, 0, 0, 2,20,
+        	15, 8, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+        	10, 0, 0, 0, 0, 0, 0, 0, 0,20, 5,
         	10, 2, 2, 1, 2, 2, 3, 2, 1, 2, 5,
         	10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
         	15, 5, 5, 5, 5, 5, 5, 6, 5, 5, 5,
         	12, 2, 0, 3, 2, 3, 2, 0, 3, 2, 2,
         	20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        	13, 0, 2, 2, 3, 2, 3, 2, 3, 0, 2,
-        	21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
+        	13, 0, 2, 2, 3, 2, 3, 2, 3, 0, 0,
+        	21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		
 .include "tiles.data"
 .include "Capa.data"
@@ -55,6 +55,7 @@ FASE2: .byte
 .include "/sprites/BauAberto.data"
 .include "/sprites/BauAbertoChave.data"
 .include "/sprites/PortaAberta.data"
+.include "/sprites/Caterpie.data"
 
 .text
 .include "macro.asm"
@@ -370,7 +371,7 @@ RESETA_FASE2:
 	la a2, POSITION
 	li s4, 152		# Coordenada Inicial X - Posição Pikachu
 	sh s4, 0(a2)
-	li s4, 186		# Coordenada Inicial Y - Posição Pikachu
+	li s4, 185		# Coordenada Inicial Y - Posição Pikachu
 	sh s4, 2(a2)
 	
 	la a2, CONTADOR
@@ -391,7 +392,7 @@ RESETA_FASE2:
 	
 	
 	frame_atual()
-	load_values(152,186,pikachu_back)
+	load_values(152,185,pikachu_back)
 	call PRINT_IMAGE
 	frame_atual()
 	load_values(268,48,TRES)
