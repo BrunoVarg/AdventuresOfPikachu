@@ -4,11 +4,12 @@ MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
 BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21
 POKEBOLA: .byte 0 
-NUM_POKEBOLA: .byte 3		# Adicionar quantidade de pokebolas por fase
+NUM_POKEBOLA: .byte 3, 4	# Adicionar quantidade de pokebolas por fase
 PEGOU_POKEBOLA: .byte 0		# Sempre zerar a cada nova fase		
 PEGOU_CHAVE: .byte 0 
 
-FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
+FASE1: .byte 	
+	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
         	11, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1,
         	11,21, 1, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -20,17 +21,18 @@ FASE1: .byte 	12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	11, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
         	12, 2, 2, 1, 0, 0, 0, 1, 2, 2, 2 
 
-FASE2: .byte 	10, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2,
-        	10, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2,
-        	11, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1,
-        	11,20, 1, 0, 0, 0, 0, 0, 0, 0, 1,
-        	11, 0, 2, 2,21, 0, 0, 0, 2, 0, 1,
-        	11, 0, 2, 2, 2, 0, 0, 0, 0, 2, 1,
-        	11, 0, 0, 2, 2, 1, 0, 0, 0, 0, 1,
-        	11, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,
-        	11, 0, 0, 0, 0, 0, 0, 0,20, 0, 1,
-        	11, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1,
-        	12, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1 
+FASE2: .byte 
+	15, 6, 5, 5, 5, 5, 20, 2, 0, 0, 0,
+        	15, 6, 7, 7, 7, 7, 0, 0, 0, 2, 20,
+        	15, 6, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+        	10, 0, 0, 0, 0, 0, 0, 0, 0, 20, 5,
+        	10, 2, 2, 1, 2, 2, 3, 2, 1, 2, 5,
+        	10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
+        	15, 5, 5, 5, 5, 5, 5, 6, 5, 5, 5,
+        	12, 2, 0, 3, 2, 3, 2, 0, 3, 2, 2,
+        	20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        	13, 0, 2, 2, 3, 2, 3, 2, 3, 0, 2,
+        	21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3,
 		
 .include "tiles.data"
 .include "Capa.data"
@@ -120,6 +122,7 @@ KEYBOARD_LOOP:
 	verify('s',MOV_DOWN)
 	verify('a',MOV_LEFT)
 	verify('d',MOV_RIGHT)
+	verify('2',INT_INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
 	
@@ -233,6 +236,11 @@ PRINT_DO:
 	#s1 = y
 	#a1 = label
 	
+	
+# TRAMPOLIM
+
+INT_INICIO_FASE2: j INICIO_FASE2
+
 
 # Aperta A
 
@@ -392,8 +400,244 @@ RESETA_FASE2:
 	load_values(268,93,ZERO)
 	call PRINT_IMAGE
 	
+KEYBOARD_LOOP2:
+
+	li t1,0xFF200000
+	lw t0,0(t1)
+	andi t0,t0,0x0001
+  	beq t0,zero,KEYBOARD_LOOP2
+  	lw t0,4(t1)			# Tecla pressionada = t0
+
+
+	verify('w',MOV_UP2)
+	verify('s',MOV_DOWN2)
+	verify('a',MOV_LEFT2)
+	verify('d',MOV_RIGHT2)
+	j KEYBOARD_LOOP2
 	
 	
+# Aperta W
+
+MOV_UP2:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase2)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	# através de um contador que diz se é ímpar ou par
+	ultima_tecla(MOV1_UP2)
+	j MOV2_UP2
+
+RESETA_MU2:
+	la a5, POSITION
+	lh s5, 2(a5)
+	addi s5, s5, 16
+	sh s5, 2(a5)
+	j PRINT_MU2
+	
+MOV1_UP2:
+	frame_atual()
+	movement_y_up(pikachu_back)
+	verifica_muro(RESETA_MU2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_MU2)
+	j PRINT_MU2
+	
+MOV2_UP2:
+	frame_atual()
+	movement_y_up(pikachu_back1)
+	verifica_muro(RESETA_MU2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_MU2)
+
+
+	
+PRINT_MU2:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE2,1,72,178) 
+	pegou_chave(72,178,88,13)
+	proxima_fase(152,26,INICIO_FASE3)
+	j KEYBOARD_LOOP2
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
+	
+# APERTA S
+
+MOV_DOWN2:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase2)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	
+	ultima_tecla(MOV1_DO2)
+	j MOV2_DO2
+
+RESETA_DO2:
+	la a5, POSITION
+	lh s5, 2(a5)
+	addi s5, s5, -16
+	sh s5, 2(a5)
+	j PRINT_DO2	
+	
+MOV1_DO2:
+	frame_atual()
+	movement_y_down(pikachu_front)
+	verifica_muro(RESETA_DO2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_DO2)
+	j PRINT_DO2
+	
+MOV2_DO2:
+	frame_atual()
+	movement_y_down(pikachu_front1)
+	verifica_muro(RESETA_DO2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_DO2)
+
+	
+PRINT_DO2:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE2,1,72,178)  
+	pegou_chave(72,178,88,13)
+	proxima_fase(152,26,INICIO_FASE3)
+	j KEYBOARD_LOOP2
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
+
+# Aperta A
+
+MOV_LEFT2:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase2)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	
+	ultima_tecla(MOV1_LE2)
+	j MOV2_LE2
+
+RESETA_LE2:
+	la a5, POSITION
+	lh s5, 0(a5)
+	addi s5, s5, 16
+	sh s5, 0(a5)
+	j PRINT_LE2
+		
+MOV1_LE2:
+	frame_atual()
+	movement_x_left(pikachu_left)
+	verifica_muro(RESETA_LE2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_LE2)
+	j PRINT_LE2
+	
+MOV2_LE2:
+	frame_atual()
+	movement_x_left(pikachu_left1)
+	verifica_muro(RESETA_LE2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_LE2)
+
+	
+PRINT_LE2:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE2,1,72,178) 
+	pegou_chave(72,178,88,13) 
+	proxima_fase(152,26,INICIO_FASE3)
+	j KEYBOARD_LOOP2
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
+
+# Aperta D
+	
+MOV_RIGHT2:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase2)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	
+	ultima_tecla(MOV1_RI2)
+	j MOV2_RI2
+
+RESETA_RI2:
+	la a5, POSITION
+	lh s5, 0(a5)
+	addi s5, s5, -16
+	sh s5, 0(a5)
+	j PRINT_RI2	
+	
+MOV1_RI2:
+	frame_atual()
+	movement_x_right(pikachu_right)
+	verifica_muro(RESETA_RI2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_RI2)
+	j PRINT_RI2
+	
+MOV2_RI2:
+	frame_atual()
+	movement_x_right(pikachu_right1)
+	verifica_muro(RESETA_RI2)
+	bloco_atual()
+	verifica_bloco(FASE2,RESETA_RI2)
+
+	
+PRINT_RI2:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE2,1,72,178)  
+	pegou_chave(72,178,88,13)
+	proxima_fase(152,26,INICIO_FASE3)
+	j KEYBOARD_LOOP2
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+
+INICIO_FASE3:
+
 # devolve o controle ao sistema operacional
 FIM:
 	

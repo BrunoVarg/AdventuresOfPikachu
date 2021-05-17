@@ -1,9 +1,9 @@
 .data
 .text
 #################################
-#				#
+#			#
 #	    PRINT		#
-#				#
+#			#
 #################################
 
 .macro print_background(%label)
@@ -31,9 +31,9 @@ FIM_PB:
 .end_macro
 
 #################################
-#				#
+#			#
 # 	   Frames		#
-#				#
+#			#
 #################################
 
 .macro change_frame()
@@ -56,10 +56,10 @@ FIM_PB:
 	
 
 #################################
-#				#
-#	Carrega valores		#
+#			#
+#	Carrega valores	#
 #   pra usar no PRINT_IMAGE	#
-#				#
+#			#
 #################################
 
 .macro load_values(%x,%y,%label)
@@ -69,10 +69,10 @@ la a1, %label
 .end_macro
 
 #################################
-#				#
-#	   Verifica		#
+#			#
+#	   Verifica	#
 #   o caractere da KEYBOARD 	#
-#				#
+#			#
 #################################
 
 .macro verify(%char,%label)
@@ -82,9 +82,9 @@ beq t1,t0,%label
 
 
 #################################
-#				#
+#			#
 # 	     CLEAN		#
-#				#
+#			#
 #################################
 
 
@@ -251,6 +251,12 @@ beq t5, s6, SOMA
 j FIM
 
 SOMA: 
+	li a0, 80
+	li a3, 127
+	li a2, 112
+	li a1,300
+	li a7, 31
+	ecall
 	la s9, POKEBOLA
 	lb s10, 0(s9)
 	addi s10, s10, 1
