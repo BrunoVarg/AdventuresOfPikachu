@@ -8,6 +8,8 @@ NUM_POKEBOLA: .byte 3, 4	# Adicionar quantidade de pokebolas por fase
 PEGOU_POKEBOLA: .byte 0		# Sempre zerar a cada nova fase		
 PEGOU_CHAVE: .byte 0 
 PRINTOU_CATERPIE: .byte 0 
+BLOCO_ATUAL: .byte 0 
+VIDAS: .byte 3 
 FASE1: .byte 	
 		12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
@@ -56,7 +58,7 @@ FASE2: .byte
 .include "/sprites/BauAbertoChave.data"
 .include "/sprites/PortaAberta.data"
 .include "/sprites/Caterpie.data"
-
+.include "/sprites/pikachu/pikachu_morto.data"
 .text
 .include "macro.asm"
 # Carrega a imagem1
@@ -446,6 +448,7 @@ MOV1_UP2:
 	verifica_muro(RESETA_MU2)
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_MU2)
+	
 	j PRINT_MU2
 	
 MOV2_UP2:
@@ -456,6 +459,7 @@ MOV2_UP2:
 	verifica_bloco(FASE2,RESETA_MU2)
 
 
+
 	
 PRINT_MU2:
 	load_position(POSITION)
@@ -464,6 +468,7 @@ PRINT_MU2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178) 
 	printa_caterpie()
+	perder_vida(22, INICIO_FASE2)
 	pegou_chave(72,178,88,13)
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
@@ -503,6 +508,7 @@ MOV1_DO2:
 	verifica_muro(RESETA_DO2)
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_DO2)
+	
 	j PRINT_DO2
 	
 MOV2_DO2:
@@ -512,6 +518,7 @@ MOV2_DO2:
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_DO2)
 
+
 	
 PRINT_DO2:
 	load_position(POSITION)
@@ -520,6 +527,7 @@ PRINT_DO2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178)  
 	printa_caterpie()
+	perder_vida(22, INICIO_FASE2)
 	pegou_chave(72,178,88,13)
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
@@ -559,6 +567,7 @@ MOV1_LE2:
 	verifica_muro(RESETA_LE2)
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_LE2)
+
 	j PRINT_LE2
 	
 MOV2_LE2:
@@ -567,6 +576,7 @@ MOV2_LE2:
 	verifica_muro(RESETA_LE2)
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_LE2)
+	
 
 	
 PRINT_LE2:
@@ -576,6 +586,7 @@ PRINT_LE2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178) 
 	printa_caterpie()
+	perder_vida(22, INICIO_FASE2)
 	pegou_chave(72,178,88,13) 
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2
@@ -615,6 +626,7 @@ MOV1_RI2:
 	verifica_muro(RESETA_RI2)
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_RI2)
+	
 	j PRINT_RI2
 	
 MOV2_RI2:
@@ -623,6 +635,7 @@ MOV2_RI2:
 	verifica_muro(RESETA_RI2)
 	bloco_atual()
 	verifica_bloco(FASE2,RESETA_RI2)
+	
 
 	
 PRINT_RI2:
@@ -632,6 +645,7 @@ PRINT_RI2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178)  
 	printa_caterpie()
+	perder_vida(22, INICIO_FASE2)
 	pegou_chave(72,178,88,13)
 	proxima_fase(152,26,INICIO_FASE3)
 	j KEYBOARD_LOOP2

@@ -1,9 +1,9 @@
 .data
 .text
 #################################
-#			#
+#			        #
 #	    PRINT		#
-#			#
+#			        #
 #################################
 
 .macro print_background(%label)
@@ -213,6 +213,8 @@ add s7, s7, s6
 la a5, %label
 add a5, a5, s7
 lb t5, 0(a5)		# Bloco do Mapa que a Sprite está
+la s10, BLOCO_ATUAL 
+sb t5, 0(s10)
 la a2, BLOCOS_BLOQUEADOS
 li t6, 12		# Tamanho dos BLOCOS_BLOQUEADOS
 li s4, 0		# Contador
@@ -358,7 +360,7 @@ PASSOU_Y_DIREITA:
 	j FIM_PC  						 
 PRINTA_CATERPIE_DIREITA:					 
 	la t5, FASE2						 
-	li t4, 12						 
+	li t4, 22						 
 	sb t4, 109(t5)                                           
 	frame_atual()                                            
 	load_values(232,169,Caterpie)                            
@@ -377,7 +379,7 @@ PASSOU_Y_ESQUERDA:
 	
 PRINTA_CATERPIE_ESQUERDA:
 	la t5, FASE2
-	li t4, 12
+	li t4, 22
 	sb t4, 100(t5)
 	frame_atual()
 	load_values(88,169,Caterpie)
@@ -387,6 +389,38 @@ PRINTA_CATERPIE_ESQUERDA:
 	j FIM_PC	
 
 FIM_PC:
+.end_macro 
+
+.macro perder_vida(%num, %label)
+	li a3, %num
+	la s4, BLOCO_ATUAL
+	lb s5, 0(s4)
+	li a7, 1
+	mv a0, s5
+	ecall 
+	
+	beq s5, a3, SPRITE_MORTE
+	j FIM 
+	
+SPRITE_MORTE:
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase2)
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	la a1, pikachu_morto
+	call PRINT_IMAGE
+	li a7, 32
+	li a0, 2000
+	ecall 
+	la t5, FASE2
+	li t4, 0
+	sb t4, 100(t5)
+	sb t4, 109(t5)
+	j %label 
+FIM:
 .end_macro 
 #################################
 #				#
