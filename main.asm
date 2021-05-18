@@ -35,11 +35,25 @@ FASE2: .byte
         	20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         	11, 0, 1, 2, 3, 2, 1, 2, 3, 1, 0,
         	21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        	
+FASE3: .byte 
+		15, 20, 5, 5, 0, 0, 0, 5, 0, 0, 0,
+        	15, 6,5, 5, 5, 6, 5, 5, 0, 6, 0,
+        	15, 0, 0, 0, 0, 0, 0, 1, 5, 5, 5,
+        	15, 5, 5, 1, 1, 1, 1, 1, 5, 5, 5,
+        	15, 5, 5, 1, 5, 6, 5, 5, 5, 5, 5,
+        	15, 5, 5, 5, 0, 6, 0, 5, 5, 5, 5,
+        	15, 5, 5, 5, 0, 20, 0, 5, 5, 5, 5,
+        	15, 5, 5, 5, 0, 0, 0, 5, 5, 5, 5,
+        	15, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+        	15, 5, 5, 5, 5, 5, 5, 5, 5, 20, 5,
+        	15, 5, 5, 20, 5, 5, 5, 5, 5, 5, 5,
 		
 .include "tiles.data"
 .include "Capa.data"
 .include "fase1.data"
 .include "fase2.data"
+.include "fase3.data"
 .include "/sprites/pikachu/pikachu_front.data"
 .include "/sprites/pikachu/pikachu_front1.data"
 .include "/sprites/pikachu/pikachu_right.data"
@@ -126,6 +140,7 @@ KEYBOARD_LOOP:
 	verify('a',MOV_LEFT)
 	verify('d',MOV_RIGHT)
 	verify('2',INT_INICIO_FASE2)
+	verify ('3',INT_INICIO_FASE3)
 	j KEYBOARD_LOOP
 	
 	
@@ -243,7 +258,7 @@ PRINT_DO:
 # TRAMPOLIM
 
 INT_INICIO_FASE2: j INICIO_FASE2
-
+INT_INICIO_FASE3: j INICIO_FASE3
 
 # Aperta A
 
@@ -359,10 +374,13 @@ PRINT_RI:
 #	   						FASE 2 							             #
 #															     #
 ##############################################################################################################################	
-
+RESTART_FASE2:
+	reseta_pokebola(FASE2)
+	
 INICIO_FASE2:
-
 	change_frame()
+	next_frame()
+	print_background(fase2)
 	frame_atual()
 	print_background(fase2)		# Printa a fase 1 na próxima frame
 	frame_atual()
@@ -392,13 +410,63 @@ RESETA_FASE2:
 	li s4, 0
 	sb s4, 0(a2)		# Reseta a chave
 	
+	la a2, PRINTOU_CATERPIE
+	li s4, 0
+	sb s4, 0(a2)		# Reseta os inimigos
 	
 	frame_atual()
 	load_values(152,185,pikachu_back)
 	call PRINT_IMAGE
+	
+PRINTAR_VIDAS:
+	la a7, VIDAS
+	lb s10, 0(a7)
+	li a4,0
+	li s4,1
+	li a6,2
+	li s6,3
+	li s7,4
+	li s8,5 
+	beq s10, a4, PRINT_VIDA0
+	beq s10, s4, PRINT_VIDA1
+	beq s10, a6, PRINT_VIDA2
+	beq s10, s6, PRINT_VIDA3
+	beq s10, s7, PRINT_VIDA4
+	beq s10, s8, PRINT_VIDA5
+	
+PRINT_VIDA0:
+	frame_atual()
+	load_values(268,48,ZERO)
+	call PRINT_IMAGE
+	j FIM_VIDAS
+PRINT_VIDA1:
+	frame_atual()
+	load_values(268,48,UM)
+	call PRINT_IMAGE
+	j FIM_VIDAS
+PRINT_VIDA2:
+	frame_atual()
+	load_values(268,48,DOIS)
+	call PRINT_IMAGE
+	j FIM_VIDAS
+PRINT_VIDA3:
 	frame_atual()
 	load_values(268,48,TRES)
 	call PRINT_IMAGE
+	j FIM_VIDAS
+PRINT_VIDA4:
+	frame_atual()
+	load_values(268,48,QUATRO)
+	call PRINT_IMAGE
+	j FIM_VIDAS
+PRINT_VIDA5:
+	frame_atual()
+	load_values(268,48,CINCO)
+	call PRINT_IMAGE
+	j FIM_VIDAS
+
+FIM_VIDAS:
+				
 	frame_atual()
 	load_values(268,93,ZERO)
 	call PRINT_IMAGE
@@ -468,9 +536,9 @@ PRINT_MU2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178) 
 	printa_caterpie()
-	perder_vida(22, INICIO_FASE2)
+	perder_vida(22, RESTART_FASE2)
 	pegou_chave(72,178,88,13)
-	proxima_fase(152,26,INICIO_FASE3)
+	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
 	#t0 = frame
@@ -527,9 +595,9 @@ PRINT_DO2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178)  
 	printa_caterpie()
-	perder_vida(22, INICIO_FASE2)
+	perder_vida(22, RESTART_FASE2)
 	pegou_chave(72,178,88,13)
-	proxima_fase(152,26,INICIO_FASE3)
+	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
 	#t0 = frame
@@ -586,9 +654,9 @@ PRINT_LE2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178) 
 	printa_caterpie()
-	perder_vida(22, INICIO_FASE2)
+	perder_vida(22, RESTART_FASE2)
 	pegou_chave(72,178,88,13) 
-	proxima_fase(152,26,INICIO_FASE3)
+	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
 	#t0 = frame
@@ -645,9 +713,9 @@ PRINT_RI2:
 	call PRINT_IMAGE
 	conta_pokebola(FASE2,1,72,178)  
 	printa_caterpie()
-	perder_vida(22, INICIO_FASE2)
+	perder_vida(22, RESTART_FASE2)
 	pegou_chave(72,178,88,13)
-	proxima_fase(152,26,INICIO_FASE3)
+	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
 	#t0 = frame
@@ -655,7 +723,293 @@ PRINT_RI2:
 	#s1 = y
 	#a1 = label
 
+##############################################################################################################################	
+#											    #
+#	   						FASE 3			 	    #
+#											    #
+##############################################################################################################################	
+
+
 INICIO_FASE3:
+
+	change_frame()
+	frame_atual()
+	print_background(fase3)		# Printa a fase 1 na próxima frame
+	frame_atual()
+	load_fase(FASE3)
+	call PRINT_MAPA
+	
+RESETA_FASE3:
+	la a2, POSITION
+	li s4, 152		# Coordenada Inicial X - Posição Pikachu
+	sh s4, 0(a2)
+	li s4, 185		# Coordenada Inicial Y - Posição Pikachu
+	sh s4, 2(a2)
+	
+	la a2, CONTADOR
+	li s4, 0
+	sw s4, 0(a2)		# Reseta o Contador
+	
+	la a2, POKEBOLA
+	li s4, 0
+	sb s4, 0(a2)		# Reseta as Pokebolas
+	
+	la a2, PEGOU_POKEBOLA
+	li s4, 0
+	sb s4, 0(a2)		# Reseta se Pegou as Pokebolas
+	
+	la a2, PEGOU_CHAVE
+	li s4, 0
+	sb s4, 0(a2)		# Reseta a chave
+	
+	
+	frame_atual()
+	load_values(152,185,pikachu_back)
+	call PRINT_IMAGE
+	frame_atual()
+	load_values(268,48,TRES)
+	call PRINT_IMAGE
+	frame_atual()
+	load_values(268,93,ZERO)
+	call PRINT_IMAGE
+	
+KEYBOARD_LOOP3:
+
+	li t1,0xFF200000
+	lw t0,0(t1)
+	andi t0,t0,0x0001
+  	beq t0,zero,KEYBOARD_LOOP3
+  	lw t0,4(t1)			# Tecla pressionada = t0
+
+
+	verify('w',MOV_UP3)
+	verify('s',MOV_DOWN3)
+	verify('a',MOV_LEFT3)
+	verify('d',MOV_RIGHT3)
+	j KEYBOARD_LOOP3
+	
+	
+# Aperta W
+
+MOV_UP3:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase3)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	# através de um contador que diz se é ímpar ou par
+	ultima_tecla(MOV1_UP3)
+	j MOV2_UP3
+
+RESETA_MU3:
+	la a5, POSITION
+	lh s5, 2(a5)
+	addi s5, s5, 16
+	sh s5, 2(a5)
+	j PRINT_MU3
+	
+MOV1_UP3:
+	frame_atual()
+	movement_y_up(pikachu_back)
+	verifica_muro(RESETA_MU3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_MU3)
+	j PRINT_MU3
+	
+MOV2_UP3:
+	frame_atual()
+	movement_y_up(pikachu_back1)
+	verifica_muro(RESETA_MU3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_MU3)
+
+
+	
+PRINT_MU3:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE3,1,72,178) 
+	pegou_chave(72,178,88,13)
+	proxima_fase(152,26,INICIO_FASE4)
+	j KEYBOARD_LOOP3
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
+	
+# APERTA S
+
+MOV_DOWN3:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase3)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	
+	ultima_tecla(MOV1_DO3)
+	j MOV2_DO3
+
+RESETA_DO3:
+	la a5, POSITION
+	lh s5, 2(a5)
+	addi s5, s5, -16
+	sh s5, 2(a5)
+	j PRINT_DO3	
+	
+MOV1_DO3:
+	frame_atual()
+	movement_y_down(pikachu_front)
+	verifica_muro(RESETA_DO3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_DO3)
+	j PRINT_DO3
+	
+MOV2_DO3:
+	frame_atual()
+	movement_y_down(pikachu_front1)
+	verifica_muro(RESETA_DO3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_DO3)
+
+	
+PRINT_DO3:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE3,1,72,178)  
+	pegou_chave(72,178,88,13)
+	proxima_fase(152,26,INICIO_FASE4)
+	j KEYBOARD_LOOP3
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
+
+# Aperta A
+
+MOV_LEFT3:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase3)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	
+	ultima_tecla(MOV1_LE3)
+	j MOV2_LE3
+
+RESETA_LE3:
+	la a5, POSITION
+	lh s5, 0(a5)
+	addi s5, s5, 16
+	sh s5, 0(a5)
+	j PRINT_LE3
+		
+MOV1_LE3:
+	frame_atual()
+	movement_x_left(pikachu_left)
+	verifica_muro(RESETA_LE3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_LE3)
+	j PRINT_LE3
+	
+MOV2_LE3:
+	frame_atual()
+	movement_x_left(pikachu_left1)
+	verifica_muro(RESETA_LE3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_LE3)
+
+	
+PRINT_LE3:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE3,1,72,178) 
+	pegou_chave(72,178,88,13) 
+	proxima_fase(152,26,INICIO_FASE4)
+	j KEYBOARD_LOOP3
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+	
+
+# Aperta D
+	
+MOV_RIGHT3:
+
+	load_position(POSITION)
+	frame_atual()
+	clean_image(fase3)
+	
+	call CLEAN_IMAGE
+	load_position(POSITION)
+	
+	# Estrutura Condicional que verifica qual a ultima tecla
+	
+	ultima_tecla(MOV1_RI3)
+	j MOV2_RI3
+
+RESETA_RI3:
+	la a5, POSITION
+	lh s5, 0(a5)
+	addi s5, s5, -16
+	sh s5, 0(a5)
+	j PRINT_RI3	
+	
+MOV1_RI3:
+	frame_atual()
+	movement_x_right(pikachu_right)
+	verifica_muro(RESETA_RI3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_RI3)
+	j PRINT_RI3
+	
+MOV2_RI3:
+	frame_atual()
+	movement_x_right(pikachu_right1)
+	verifica_muro(RESETA_RI3)
+	bloco_atual()
+	verifica_bloco(FASE3,RESETA_RI3)
+
+	
+PRINT_RI3:
+	load_position(POSITION)
+	mv s2, t1
+	mv s1, t2
+	call PRINT_IMAGE
+	conta_pokebola(FASE3,1,72,178)  
+	pegou_chave(72,178,88,13)
+	proxima_fase(152,26,INICIO_FASE4)
+	j KEYBOARD_LOOP3
+	
+	#t0 = frame
+	#s2 = x
+	#s1 = y
+	#a1 = label
+
+INICIO_FASE4:
 
 # devolve o controle ao sistema operacional
 FIM:

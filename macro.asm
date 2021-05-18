@@ -267,7 +267,7 @@ SOMA:
 	lb s10, 0(s9)
 	addi s10, s10, 1
 	sb s10, 0(s9)
-	li s11, 0 
+	li s11, 23
 	sb s11,0(s8)
 
 PRINTAR: 
@@ -332,7 +332,24 @@ FIM:
 	
 .end_macro
 
-
+.macro reseta_pokebola(%label)
+    la a3, %label
+    li s4, 121    # Tamanho
+    li s5, 0    # Contador
+    li s6, 23    # Bloco de Tijolo auxiliar
+    li s7, 20    # Valor da Pokebola
+LOOP:
+    beq s5, s4, FIM
+    addi s5, s5, 1
+    addi a3, a3, 1
+    lb s8, 0(a3)
+    beq s8, s6, BOTA_POKEBOLA
+    j LOOP
+BOTA_POKEBOLA:
+    sb s7, 0(a3)
+    j LOOP
+FIM:
+.end_macro
 
 .macro printa_caterpie()
 	la s10 , PRINTOU_CATERPIE
@@ -412,6 +429,12 @@ SPRITE_MORTE:
 	mv s1, t2
 	la a1, pikachu_morto
 	call PRINT_IMAGE
+	li a7, 31                # Musiquinha quando morre
+	li a0, 61
+	li a1, 2000
+	li a2, 121
+	li a3, 127
+	ecall
 	li a7, 32
 	li a0, 2000
 	ecall 
@@ -419,7 +442,12 @@ SPRITE_MORTE:
 	li t4, 0
 	sb t4, 100(t5)
 	sb t4, 109(t5)
+        la a5 , VIDAS
+        lb a6, 0(a5)		
+        addi a6,a6,-1
+        sb a6,0(a5)	
 	j %label 
+
 FIM:
 .end_macro 
 #################################
@@ -452,6 +480,12 @@ PRINTA_BAU:
 	frame_atual()
 	load_values(%x,%y,BauAberto)          
 	call PRINT_IMAGE
+	li a7, 31               
+	li a0, 61
+	li a1, 2000
+	li a2, 114
+	li a3, 127
+	ecall
 	frame_atual()
 	load_values(%xporta,%yporta,PortaAberta)          
 	call PRINT_IMAGE
