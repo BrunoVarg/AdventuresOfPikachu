@@ -963,7 +963,7 @@ PRINT_MU3:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE3,1,152,114) 
-	pegou_chave(152,114,212,13,PortaAberta3)
+	pegou_chave(152,114,216,12,PortaAberta3)
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
@@ -1018,7 +1018,7 @@ PRINT_DO3:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE3,1,152,114)  
-	pegou_chave(152,114,212,13,PortaAberta3)
+	pegou_chave(152,114,216,12,PortaAberta3)
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
@@ -1073,7 +1073,7 @@ PRINT_LE3:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE3,1,152,114) 
-	pegou_chave(152,114,212,13,PortaAberta3) 
+	pegou_chave(152,114,216,12,PortaAberta3) 
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
@@ -1129,7 +1129,7 @@ PRINT_RI3:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE3,1,152,114)  
-	pegou_chave(152,114,212,13,PortaAberta3)
+	pegou_chave(152,114,216,12,PortaAberta3)
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
