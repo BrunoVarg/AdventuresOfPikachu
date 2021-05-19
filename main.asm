@@ -518,7 +518,7 @@ KEYBOARD_LOOP2:
 	verify('s',MOV_DOWN2)
 	verify('a',MOV_LEFT2)
 	verify('d',MOV_RIGHT2)
-	verify ('r',INICIO_FASE2)
+	verify ('r',RESTART_FASE2)
 	verify ('1',INT_INICIO_FASE1)
 	verify ('3',INT_INICIO_FASE3)
 	j KEYBOARD_LOOP2
