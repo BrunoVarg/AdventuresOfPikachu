@@ -1,5 +1,6 @@
 .text
 CLEAN_IMAGE:
+	li t4, 0
 	li t3, 0
 	li t1,0xFF000000	# endereco inicial da Memoria VGA - Frame 0
 	bgtz  t0, FRAME1_CI

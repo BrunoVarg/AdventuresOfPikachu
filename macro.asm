@@ -216,7 +216,7 @@ lb t5, 0(a5)		# Bloco do Mapa que a Sprite está
 la s10, BLOCO_ATUAL 
 sb t5, 0(s10)
 la a2, BLOCOS_BLOQUEADOS
-li t6, 12		# Tamanho dos BLOCOS_BLOQUEADOS
+li t6, 16		# Tamanho dos BLOCOS_BLOQUEADOS
 li s4, 0		# Contador
 LOOP:
 	beq s4, t6, FIM

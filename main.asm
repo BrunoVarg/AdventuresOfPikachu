@@ -1,8 +1,9 @@
 .data
 POSITION: .half 152,186		# x e y inicial
+BOLA_DE_FOGO: .half 88,185	# x e y da bola de fogo
 MURO: .half 70,24,248,201	# Coordenadas do muro
 CONTADOR: .word 0		# Auxilia a printar a sprite adequada, se for ímpar ou par
-BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21, 22
+BLOCOS_BLOQUEADOS: .byte 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 21, 22, 24, 25, 26, 27
 POKEBOLA: .byte 0 
 NUM_POKEBOLA: .byte 3, 4	# Adicionar quantidade de pokebolas por fase
 PEGOU_POKEBOLA: .byte 0		# Sempre zerar a cada nova fase		
@@ -10,6 +11,7 @@ PEGOU_CHAVE: .byte 0
 PRINTOU_CATERPIE: .byte 0 
 BLOCO_ATUAL: .byte 0 
 VIDAS: .byte 3 
+CONTADOR1: .word 0
 FASE1: .byte 	
 		12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
@@ -37,17 +39,17 @@ FASE2: .byte
         	21, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         	
 FASE3: .byte 
-		15, 20, 5, 5, 0, 0, 0, 5, 0, 0, 0,
-        	15, 6,5, 5, 5, 6, 5, 5, 0, 6, 0,
-        	15, 0, 0, 0, 0, 0, 0, 1, 5, 5, 5,
-        	15, 5, 5, 1, 1, 1, 1, 1, 5, 5, 5,
-        	15, 5, 5, 1, 5, 6, 5, 5, 5, 5, 5,
-        	15, 5, 5, 5, 0, 6, 0, 5, 5, 5, 5,
-        	15, 5, 5, 5, 0, 20, 0, 5, 5, 5, 5,
-        	15, 5, 5, 5, 0, 0, 0, 5, 5, 5, 5,
-        	15, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-        	15, 5, 5, 5, 5, 5, 5, 5, 5, 20, 5,
-        	15, 5, 5, 20, 5, 5, 5, 5, 5, 5, 5,
+		25, 20, 24, 24, 30, 30, 30, 24, 24, 28, 24,
+            	25, 28, 24, 24, 24, 28, 24, 24, 24, 28, 24,
+            	31, 30, 30, 30, 30, 30, 30, 26, 30, 30, 30,
+            	31, 30, 30, 26, 26, 26, 26, 26, 20, 30, 30,
+            	27, 30, 30, 24, 24, 24, 24, 24, 30, 30, 30,
+            	31, 30, 30, 24, 30, 30, 30, 24, 24, 28, 24,
+            	25, 28, 24, 24, 30, 21, 30, 24, 26, 28, 26,
+            	25, 28, 24, 24, 30, 30, 30, 24, 26, 30, 30,
+            	27, 28, 26, 26, 26, 28, 24, 24, 26, 30, 20,
+            	31, 30, 30, 30, 26, 30, 26, 30, 26, 30, 30,
+            	31, 30, 30, 30, 30, 20, 30, 30, 30, 30, 30,
 		
 .include "tiles.data"
 .include "Capa.data"
@@ -73,14 +75,15 @@ FASE3: .byte
 .include "/sprites/PortaAberta.data"
 .include "/sprites/Caterpie.data"
 .include "/sprites/pikachu/pikachu_morto.data"
+.include "/sprites/charmander.data"
+.include "/sprites/bolafogo.data"
 .text
 .include "macro.asm"
 # Carrega a imagem1
 INICIO:
 	frame_atual()
 	print_background(Capa)		# Printa a capa na frame inicial
-	next_frame()
-	print_background(fase1)		# Printa a fase 1 na próxima frame
+	
 
 KEYBOARD_1:
 	# Descomentar no fim	
@@ -91,17 +94,45 @@ KEYBOARD_1:
    	#beq t0,zero,KEYBOARD   # Se não há tecla pressionada então volta pro LOOP
   	#j PROX_LABEL 		# vai para a próxima LABEL se pressionar uma tecla
   	
-PROX_LABEL:
-	change_frame()
-	
+  	
 ##############################################################################################################################	
 #															     #
 #	   						FASE 1 							             #
 #															     #
 ##############################################################################################################################
+INICIO_FASE1:
+	next_frame()
+	print_background(fase1)		# Printa a fase 1 na próxima frame
+	
+	change_frame()
+	
+
 
 	next_frame()
 	print_background(fase1)
+	
+RESETA_FASE1:
+	la a2, POSITION
+	li s4, 152		# Coordenada Inicial X - Posição Pikachu
+	sh s4, 0(a2)
+	li s4, 186		# Coordenada Inicial Y - Posição Pikachu
+	sh s4, 2(a2)
+	
+	la a2, CONTADOR
+	li s4, 0
+	sw s4, 0(a2)		# Reseta o Contador
+	
+	la a2, POKEBOLA
+	li s4, 0
+	sb s4, 0(a2)		# Reseta as Pokebolas
+	
+	la a2, PEGOU_POKEBOLA
+	li s4, 0
+	sb s4, 0(a2)		# Reseta se Pegou as Pokebolas
+	
+	la a2, PEGOU_CHAVE
+	li s4, 0
+	sb s4, 0(a2)		# Reseta a chave
 	
 j PRINT_1
 .include "print.asm"	
@@ -259,6 +290,7 @@ PRINT_DO:
 
 INT_INICIO_FASE2: j INICIO_FASE2
 INT_INICIO_FASE3: j INICIO_FASE3
+INT_INICIO_FASE1: j INICIO_FASE1
 
 # Aperta A
 
@@ -484,6 +516,9 @@ KEYBOARD_LOOP2:
 	verify('s',MOV_DOWN2)
 	verify('a',MOV_LEFT2)
 	verify('d',MOV_RIGHT2)
+	verify ('r',INICIO_FASE2)
+	verify ('1',INT_INICIO_FASE1)
+	verify ('3',INT_INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
 	
@@ -728,10 +763,11 @@ PRINT_RI2:
 #	   						FASE 3			 	    #
 #											    #
 ##############################################################################################################################	
-
+.include "boladefogo.asm"
 
 INICIO_FASE3:
 
+	reseta_pokebola(FASE3)
 	change_frame()
 	frame_atual()
 	print_background(fase3)		# Printa a fase 1 na próxima frame
@@ -743,7 +779,7 @@ RESETA_FASE3:
 	la a2, POSITION
 	li s4, 152		# Coordenada Inicial X - Posição Pikachu
 	sh s4, 0(a2)
-	li s4, 185		# Coordenada Inicial Y - Posição Pikachu
+	li s4, 25		# Coordenada Inicial Y - Posição Pikachu
 	sh s4, 2(a2)
 	
 	la a2, CONTADOR
@@ -762,9 +798,11 @@ RESETA_FASE3:
 	li s4, 0
 	sb s4, 0(a2)		# Reseta a chave
 	
-	
 	frame_atual()
-	load_values(152,185,pikachu_back)
+	load_values(72,185,charmander)
+	call PRINT_IMAGE
+	frame_atual()
+	load_values(152,25,pikachu_front)
 	call PRINT_IMAGE
 	frame_atual()
 	load_values(268,48,TRES)
@@ -773,8 +811,29 @@ RESETA_FASE3:
 	load_values(268,93,ZERO)
 	call PRINT_IMAGE
 	
+
+
 KEYBOARD_LOOP3:
 
+CHARMANDER:
+	la s3, CONTADOR1
+	lw a5, 0(s3)
+	addi a5, a5, 1
+	sw a5, 0(s3)
+	li t6, 50
+	beq a5, t6, FIREBALL
+	j KEYBOARD_RECEBE
+FIREBALL:
+	la t5, fase3
+	jal ra, BOLA_DE_FOGO_PRINT
+	
+FORA_BOLA_DE_FOGO:
+	la s3, CONTADOR1
+	li s6, 0
+	sw s6, 0(s3)
+	
+	
+KEYBOARD_RECEBE:
 	li t1,0xFF200000
 	lw t0,0(t1)
 	andi t0,t0,0x0001
@@ -782,10 +841,16 @@ KEYBOARD_LOOP3:
   	lw t0,4(t1)			# Tecla pressionada = t0
 
 
+	
 	verify('w',MOV_UP3)
 	verify('s',MOV_DOWN3)
 	verify('a',MOV_LEFT3)
 	verify('d',MOV_RIGHT3)
+	verify ('r',INICIO_FASE3)
+	verify ('1',INT_INICIO_FASE1)
+	verify ('2',INT_INICIO_FASE2)
+	
+
 	j KEYBOARD_LOOP3
 	
 	
@@ -958,6 +1023,7 @@ PRINT_LE3:
 # Aperta D
 	
 MOV_RIGHT3:
+
 
 	load_position(POSITION)
 	frame_atual()
