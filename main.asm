@@ -12,6 +12,7 @@ PRINTOU_CATERPIE: .byte 0
 BLOCO_ATUAL: .byte 0 
 VIDAS: .byte 3 
 CONTADOR1: .word 0
+CONTADOR_FIREBALL: .byte 0 
 FASE1: .byte 	
 		12, 2, 1, 0, 0, 0, 0, 0, 1, 2, 2,
         	12, 2, 1, 0, 0, 0,20, 0, 1, 2, 2,
@@ -43,13 +44,13 @@ FASE3: .byte
             	25, 28, 24, 24, 24, 28, 24, 24, 24, 28, 24,
             	31, 30, 30, 30, 30, 30, 30, 26, 30, 30, 30,
             	31, 30, 30, 26, 26, 26, 26, 26, 20, 30, 30,
-            	27, 30, 30, 24, 24, 24, 24, 24, 30, 30, 30,
+            	27, 30, 20, 24, 24, 24, 24, 24, 30, 30, 30,
             	31, 30, 30, 24, 30, 30, 30, 24, 24, 28, 24,
             	25, 28, 24, 24, 30, 21, 30, 24, 26, 28, 26,
             	25, 28, 24, 24, 30, 30, 30, 24, 26, 30, 30,
             	27, 28, 26, 26, 26, 28, 24, 24, 26, 30, 20,
             	31, 30, 30, 30, 26, 30, 26, 30, 26, 30, 30,
-            	31, 30, 30, 30, 30, 20, 30, 30, 30, 30, 30,
+            	31, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30,
 		
 .include "tiles.data"
 .include "Capa.data"
@@ -77,6 +78,7 @@ FASE3: .byte
 .include "/sprites/pikachu/pikachu_morto.data"
 .include "/sprites/charmander.data"
 .include "/sprites/bolafogo.data"
+.include "/sprites/PortaAberta3.data"
 .text
 .include "macro.asm"
 # Carrega a imagem1
@@ -221,7 +223,7 @@ PRINT_MU:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE1,0,88,65) 
-	pegou_chave(88,65,152,13)
+	pegou_chave(88,65,152,13,PortaAberta)
 	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
@@ -276,7 +278,7 @@ PRINT_DO:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE1,0,88,65)  
-	pegou_chave(88,65,152,13)
+	pegou_chave(88,65,152,13,PortaAberta)
 	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
@@ -337,7 +339,7 @@ PRINT_LE:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE1,0,88,65) 
-	pegou_chave(88,65,152,13) 
+	pegou_chave(88,65,152,13,PortaAberta) 
 	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
@@ -392,7 +394,7 @@ PRINT_RI:
 	mv s1, t2
 	call PRINT_IMAGE
 	conta_pokebola(FASE1,0,88,65)  
-	pegou_chave(88,65,152,13)
+	pegou_chave(88,65,152,13,PortaAberta)
 	proxima_fase(152,26,INICIO_FASE2)
 	j KEYBOARD_LOOP
 	
@@ -572,7 +574,7 @@ PRINT_MU2:
 	conta_pokebola(FASE2,1,72,178) 
 	printa_caterpie()
 	perder_vida(22, RESTART_FASE2)
-	pegou_chave(72,178,88,13)
+	pegou_chave(72,178,88,13,PortaAberta)
 	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
@@ -631,7 +633,7 @@ PRINT_DO2:
 	conta_pokebola(FASE2,1,72,178)  
 	printa_caterpie()
 	perder_vida(22, RESTART_FASE2)
-	pegou_chave(72,178,88,13)
+	pegou_chave(72,178,88,13,PortaAberta)
 	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
@@ -690,7 +692,7 @@ PRINT_LE2:
 	conta_pokebola(FASE2,1,72,178) 
 	printa_caterpie()
 	perder_vida(22, RESTART_FASE2)
-	pegou_chave(72,178,88,13) 
+	pegou_chave(72,178,88,13,PortaAberta) 
 	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
@@ -749,7 +751,7 @@ PRINT_RI2:
 	conta_pokebola(FASE2,1,72,178)  
 	printa_caterpie()
 	perder_vida(22, RESTART_FASE2)
-	pegou_chave(72,178,88,13)
+	pegou_chave(72,178,88,13,PortaAberta)
 	proxima_fase(88,25,INICIO_FASE3)
 	j KEYBOARD_LOOP2
 	
@@ -769,6 +771,8 @@ INICIO_FASE3:
 
 	reseta_pokebola(FASE3)
 	change_frame()
+	next_frame()
+	print_background(fase3)
 	frame_atual()
 	print_background(fase3)		# Printa a fase 1 na próxima frame
 	frame_atual()
@@ -786,6 +790,11 @@ RESETA_FASE3:
 	li s4, 0
 	sw s4, 0(a2)		# Reseta o Contador
 	
+	la a2, CONTADOR1
+	li s4, 0
+	sw s4, 0(a2)		# Reseta o Contador1
+	
+	
 	la a2, POKEBOLA
 	li s4, 0
 	sb s4, 0(a2)		# Reseta as Pokebolas
@@ -798,19 +807,74 @@ RESETA_FASE3:
 	li s4, 0
 	sb s4, 0(a2)		# Reseta a chave
 	
+	la a4, BOLA_DE_FOGO
+	li s7, 88
+	li s8, 185
+	sh s7, 0(a4)                    # Reseta bola de fogo 
+	sh s8, 2(a4)
+	la t4, CONTADOR_FIREBALL
+	li t3, 0 
+	sb t3, 0(t4) 
+	
 	frame_atual()
 	load_values(72,185,charmander)
 	call PRINT_IMAGE
 	frame_atual()
 	load_values(152,25,pikachu_front)
 	call PRINT_IMAGE
+	
+PRINTAR_VIDAS_FASE3:
+	la a7, VIDAS
+	lb s10, 0(a7)
+	li a4,0
+	li s4,1
+	li a6,2
+	li s6,3
+	li s7,4
+	li s8,5 
+	beq s10, a4, PRINT_VIDA0_FASE3
+	beq s10, s4, PRINT_VIDA1_FASE3
+	beq s10, a6, PRINT_VIDA2_FASE3
+	beq s10, s6, PRINT_VIDA3_FASE3
+	beq s10, s7, PRINT_VIDA4_FASE3
+	beq s10, s8, PRINT_VIDA5_FASE3
+	
+PRINT_VIDA0_FASE3:
+	frame_atual()
+	load_values(268,48,ZERO)
+	call PRINT_IMAGE
+	j FIM_VIDAS_FASE3
+PRINT_VIDA1_FASE3:
+	frame_atual()
+	load_values(268,48,UM)
+	call PRINT_IMAGE
+	j FIM_VIDAS_FASE3
+PRINT_VIDA2_FASE3:
+	frame_atual()
+	load_values(268,48,DOIS)
+	call PRINT_IMAGE
+	j FIM_VIDAS_FASE3
+PRINT_VIDA3_FASE3:
 	frame_atual()
 	load_values(268,48,TRES)
 	call PRINT_IMAGE
+	j FIM_VIDAS_FASE3
+PRINT_VIDA4_FASE3:
+	frame_atual()
+	load_values(268,48,QUATRO)
+	call PRINT_IMAGE
+	j FIM_VIDAS_FASE3
+PRINT_VIDA5_FASE3:
+	frame_atual()
+	load_values(268,48,CINCO)
+	call PRINT_IMAGE
+	j FIM_VIDAS_FASE3
+
+FIM_VIDAS_FASE3:
+					
 	frame_atual()
 	load_values(268,93,ZERO)
 	call PRINT_IMAGE
-	
 
 
 KEYBOARD_LOOP3:
@@ -820,7 +884,7 @@ CHARMANDER:
 	lw a5, 0(s3)
 	addi a5, a5, 1
 	sw a5, 0(s3)
-	li t6, 50
+	li t6, 500
 	beq a5, t6, FIREBALL
 	j KEYBOARD_RECEBE
 FIREBALL:
@@ -831,7 +895,6 @@ FORA_BOLA_DE_FOGO:
 	la s3, CONTADOR1
 	li s6, 0
 	sw s6, 0(s3)
-	
 	
 KEYBOARD_RECEBE:
 	li t1,0xFF200000
@@ -899,8 +962,8 @@ PRINT_MU3:
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
-	conta_pokebola(FASE3,1,72,178) 
-	pegou_chave(72,178,88,13)
+	conta_pokebola(FASE3,1,152,114) 
+	pegou_chave(152,114,212,13,PortaAberta3)
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
@@ -954,8 +1017,8 @@ PRINT_DO3:
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
-	conta_pokebola(FASE3,1,72,178)  
-	pegou_chave(72,178,88,13)
+	conta_pokebola(FASE3,1,152,114)  
+	pegou_chave(152,114,212,13,PortaAberta3)
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
@@ -1009,8 +1072,8 @@ PRINT_LE3:
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
-	conta_pokebola(FASE3,1,72,178) 
-	pegou_chave(72,178,88,13) 
+	conta_pokebola(FASE3,1,152,114) 
+	pegou_chave(152,114,212,13,PortaAberta3) 
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	
@@ -1065,8 +1128,8 @@ PRINT_RI3:
 	mv s2, t1
 	mv s1, t2
 	call PRINT_IMAGE
-	conta_pokebola(FASE3,1,72,178)  
-	pegou_chave(72,178,88,13)
+	conta_pokebola(FASE3,1,152,114)  
+	pegou_chave(152,114,212,13,PortaAberta3)
 	proxima_fase(152,26,INICIO_FASE4)
 	j KEYBOARD_LOOP3
 	

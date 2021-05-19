@@ -465,7 +465,7 @@ FIM:
 #				#
 #################################
 
-.macro pegou_chave(%x,%y,%xporta,%yporta)       # Coordenadas do baú     
+.macro pegou_chave(%x,%y,%xporta,%yporta,%porta)       # Coordenadas do baú     
 	li a4,21
 	la t3,PEGOU_POKEBOLA
 	lb t6,0(t3)
@@ -487,7 +487,7 @@ PRINTA_BAU:
 	li a3, 127
 	ecall
 	frame_atual()
-	load_values(%xporta,%yporta,PortaAberta)          
+	load_values(%xporta,%yporta,%porta)          
 	call PRINT_IMAGE
 	la s4, PEGOU_CHAVE
 	lb s5, 0(s4)
