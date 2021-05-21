@@ -22,7 +22,7 @@ INICIO_PB:
 	addi s1,s1,8		# primeiro pixels depois das informações de nlin ncol
 LOOP1_PB: beq t1,t2,FIM_PB	# Se for o último endereço então sai do loop
 	lw t3,0(s1)		# le um conjunto de 4 pixels : word
-	sw t3,0(t1)		# escreve a word na memÃ³ria VGA
+	sw t3,0(t1)		# escreve a word na memória VGA
 	addi t1,t1,4		# soma 4 ao endereço
 	addi s1,s1,4
 	j LOOP1_PB		# volta a verificar
@@ -31,9 +31,9 @@ FIM_PB:
 .end_macro
 
 #################################
-#			#
+#				#
 # 	   Frames		#
-#			#
+#				#
 #################################
 
 .macro change_frame()
@@ -56,10 +56,10 @@ FIM_PB:
 	
 
 #################################
-#			#
-#	Carrega valores	#
+#				#
+#	Carrega valores		#
 #   pra usar no PRINT_IMAGE	#
-#			#
+#				#
 #################################
 
 .macro load_values(%x,%y,%label)
@@ -69,10 +69,10 @@ la a1, %label
 .end_macro
 
 #################################
-#			#
-#	   Verifica	#
+#				#
+#	   Verifica		#
 #   o caractere da KEYBOARD 	#
-#			#
+#				#
 #################################
 
 .macro verify(%char,%label)
@@ -86,9 +86,9 @@ FIM:
 
 
 #################################
-#			#
+#				#
 # 	     CLEAN		#
-#			#
+#				#
 #################################
 
 
@@ -412,9 +412,6 @@ FIM_PC:
 	li a3, %num
 	la s4, BLOCO_ATUAL
 	lb s5, 0(s4)
-	li a7, 1
-	mv a0, s5
-	ecall 
 	
 	beq s5, a3, SPRITE_MORTE
 	j FIM 
@@ -445,8 +442,9 @@ SPRITE_MORTE:
         la a5 , VIDAS
         lb a6, 0(a5)		
         addi a6,a6,-1
-        sb a6,0(a5)	
-	j %label 
+        sb a6,0(a5)
+        
+        j %label 
 
 FIM:
 .end_macro 
