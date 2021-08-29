@@ -12,10 +12,10 @@ Abra a main.asm
 ```
 
 ```
-Clique em Tools e abra o Keyboard and MMIO Simulator, e o Bitmap Display, e conecte ambos
+Clique em Tools e abra o Keyboard and MMIO Simulator, e o Bitmap Display, e conecte ambos e deixe-os abertos.
 ```
 
 ```
-Clique nas ferramentas e aperte no play
+Clique nas ferramentas (F3) e aperte no play (F5).
 ```
 Coordenado pelo professor Marcus Vinicius Lamar
