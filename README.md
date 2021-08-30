@@ -12,7 +12,7 @@ Abra a main.asm
 ```
 
 ```
-Clique em Tools e abra o Keyboard and MMIO Simulator, e o Bitmap Display, e conecte ambos e deixe-os abertos.
+Clique em Tools e abra o Keyboard and MMIO Simulator, e o Bitmap Display, conecte ambos e deixe-os abertos.
 ```
 
 ```
