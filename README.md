@@ -1,4 +1,4 @@
-# AdventuresOfLolo
+# AdventuresOfPikachu
 ## Projeto Final desenvolvido a fins acadêmicos, como forma de colocar em prática o que foi aprendido na matéria de Introdução aos Sistemas Computacionais pela Universidade de Brasília
 
 ![AdventuresofPikachu](https://github.com/BrunoVarg/AdventuresOfPikachu/blob/main/AdventuresOfPikachu.png) 
